@@ -7,11 +7,14 @@ use App\Modules\Articles\Models\Article;
 use App\Modules\ContentSlots\Models\ContentSlot;
 use App\Modules\Gallery\Models\Gallery;
 use App\Modules\Gallery\Models\GalleryImage;
+use App\Modules\Media\Models\MediaAsset;
+use App\Modules\Media\Services\MediaStorageService;
 use App\Modules\News\Models\NewsPost;
 use App\Modules\Notices\Models\SiteNotice;
 use App\Modules\Pages\Models\Page;
 use App\Modules\SiteSettings\Models\SiteSetting;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\UploadedFile;
 use Maracuja\SiteCore\Events\Models\Event;
 
 /** Public reference content for site.maracujadigital.fr. */
@@ -110,8 +113,8 @@ class MaracujaDigitalDemoSeeder extends Seeder
     private function seedArticles($now): void
     {
         collect([
-            ['slug' => 'preparer-un-site-qui-vous-ressemble', 'title' => 'Préparer un site qui vous ressemble', 'excerpt' => 'Trois questions utiles avant de choisir une formule ou de dessiner une première page.', 'seo_title' => 'Préparer un site qui vous ressemble — Maracuja Digital', 'seo_description' => 'Trois questions utiles pour préparer un projet de site.', 'published_at' => $now->copy()->subWeeks(3), 'body_blocks' => [['type' => 'rich_text', 'text' => '<p>Avant les maquettes, il est utile de savoir ce que les visiteurs doivent comprendre en premier, quels contenus vont évoluer et qui les fera vivre.</p>'], ['type' => 'rich_text', 'text' => '<p>Ces réponses permettent de choisir une structure claire et une administration proportionnée.</p>']]],
-            ['slug' => 'faire-vivre-ses-realisations', 'title' => 'Faire vivre ses réalisations sans refaire son site', 'excerpt' => 'Une galerie utile doit pouvoir être mise à jour au fil des projets, sans transformer chaque ajout en opération technique.', 'seo_title' => 'Faire vivre ses réalisations — Maracuja Digital', 'seo_description' => 'Comment garder une galerie de réalisations vivante et simple à administrer.', 'published_at' => $now->copy()->subWeeks(6), 'body_blocks' => [['type' => 'rich_text', 'text' => '<p>Une réalisation a besoin d’un visuel, d’un contexte et d’une place cohérente dans le récit de l’activité. Le reste doit rester simple.</p>']]],
+            ['slug' => 'preparer-un-site-qui-vous-ressemble', 'title' => 'Préparer un site qui vous ressemble', 'excerpt' => 'Trois questions utiles avant de choisir une formule ou de dessiner une première page.', 'seo_title' => 'Préparer un site qui vous ressemble — Maracuja Digital', 'seo_description' => 'Trois questions utiles pour préparer un projet de site.', 'image_media_id' => $this->media('paysage.png', 'Paysage — préparer un site', 'Paysage illustré avec un chemin qui traverse des collines au lever du soleil.', 'Un projet commence par une direction claire.' )->id, 'image_path' => null, 'published_at' => $now->copy()->subWeeks(3), 'body_blocks' => [['type' => 'rich_text', 'text' => '<p>Avant les maquettes, il est utile de savoir ce que les visiteurs doivent comprendre en premier, quels contenus vont évoluer et qui les fera vivre.</p>'], ['type' => 'rich_text', 'text' => '<p>Ces réponses permettent de choisir une structure claire et une administration proportionnée.</p>']]],
+            ['slug' => 'faire-vivre-ses-realisations', 'title' => 'Faire vivre ses réalisations sans refaire son site', 'excerpt' => 'Une galerie utile doit pouvoir être mise à jour au fil des projets, sans transformer chaque ajout en opération technique.', 'seo_title' => 'Faire vivre ses réalisations — Maracuja Digital', 'seo_description' => 'Comment garder une galerie de réalisations vivante et simple à administrer.', 'image_media_id' => $this->media('atelier-numerique.png', 'Atelier numérique', 'Ordinateur portable, carnet, plante et verre posés sur un bureau lumineux.', 'Un atelier numérique à taille humaine.' )->id, 'image_path' => null, 'published_at' => $now->copy()->subWeeks(6), 'body_blocks' => [['type' => 'rich_text', 'text' => '<p>Une réalisation a besoin d’un visuel, d’un contexte et d’une place cohérente dans le récit de l’activité. Le reste doit rester simple.</p>']]],
         ])->each(fn (array $article) => Article::query()->updateOrCreate(['slug' => $article['slug']], $article + ['is_published' => true]));
     }
 
@@ -125,11 +128,35 @@ class MaracujaDigitalDemoSeeder extends Seeder
         ]);
 
         collect([
-            ['title' => 'Un projet qui trouve son rythme', 'caption' => 'Un site se construit pas à pas : clarifier, choisir et avancer avec ce qui compte vraiment.', 'alt_text' => 'Paysage illustré avec un chemin qui traverse des collines au lever du soleil.', 'image_path' => '/demo/maracuja-digital/paysage.png', 'position' => 1],
-            ['title' => 'Un atelier numérique à taille humaine', 'caption' => 'Le numérique reste un outil de travail : précis, accessible et au service d’une activité réelle.', 'alt_text' => 'Ordinateur portable, carnet, plante et verre posés sur un bureau lumineux.', 'image_path' => '/demo/maracuja-digital/atelier-numerique.png', 'position' => 2],
-            ['title' => 'Une idée qui prend de la hauteur', 'caption' => 'La bonne direction donne de l’espace au projet sans lui ajouter de complexité inutile.', 'alt_text' => 'Illustration d’une planète pastel, de satellites et d’étoiles dans l’espace.', 'image_path' => '/demo/maracuja-digital/exploration.png', 'position' => 3],
-            ['title' => 'Le concert en plein air', 'caption' => 'Une page événementielle peut présenter un rendez-vous, son contexte et les informations pratiques.', 'alt_text' => 'Violoniste et pianiste sur une scène extérieure devant un public au coucher du soleil.', 'image_path' => '/demo/maracuja-digital/concert-en-plein-air.png', 'position' => 4],
-        ])->each(fn (array $image) => GalleryImage::query()->updateOrCreate(['gallery_id' => $gallery->id, 'title' => $image['title']], $image + ['credit' => 'Maracuja Digital', 'width' => 1200, 'height' => 800, 'is_published' => true]));
+            ['file' => 'paysage.png', 'title' => 'Un projet qui trouve son rythme', 'caption' => 'Un site se construit pas à pas : clarifier, choisir et avancer avec ce qui compte vraiment.', 'alt_text' => 'Paysage illustré avec un chemin qui traverse des collines au lever du soleil.', 'position' => 1],
+            ['file' => 'atelier-numerique.png', 'title' => 'Un atelier numérique à taille humaine', 'caption' => 'Le numérique reste un outil de travail : précis, accessible et au service d’une activité réelle.', 'alt_text' => 'Ordinateur portable, carnet, plante et verre posés sur un bureau lumineux.', 'position' => 2],
+            ['file' => 'exploration.png', 'title' => 'Une idée qui prend de la hauteur', 'caption' => 'La bonne direction donne de l’espace au projet sans lui ajouter de complexité inutile.', 'alt_text' => 'Illustration d’une planète pastel, de satellites et d’étoiles dans l’espace.', 'position' => 3],
+            ['file' => 'concert-en-plein-air.png', 'title' => 'Le concert en plein air', 'caption' => 'Une page événementielle peut présenter un rendez-vous, son contexte et les informations pratiques.', 'alt_text' => 'Violoniste et pianiste sur une scène extérieure devant un public au coucher du soleil.', 'position' => 4],
+        ])->each(function (array $image) use ($gallery): void {
+            $media = $this->media(
+                $image['file'],
+                $image['title'],
+                $image['alt_text'],
+                $image['caption'],
+            );
+
+            GalleryImage::query()->updateOrCreate(
+                ['gallery_id' => $gallery->id, 'title' => $image['title']],
+                [
+                    'caption' => $image['caption'],
+                    'credit' => 'Maracuja Digital',
+                    'alt_text' => $image['alt_text'],
+                    'media_asset_id' => $media->id,
+                    // Kept as a compatibility fallback for the legacy non-nullable column.
+                    // The public renderer prefers media_asset_id.
+                    'image_path' => '/demo/maracuja-digital/'.$image['file'],
+                    'width' => $media->width,
+                    'height' => $media->height,
+                    'position' => $image['position'],
+                    'is_published' => true,
+                ],
+            );
+        });
     }
 
     private function seedEvent($now): void
@@ -143,7 +170,8 @@ class MaracujaDigitalDemoSeeder extends Seeder
             'timezone' => 'Europe/Paris',
             'excerpt' => 'Un exemple complet de rendez-vous public : date, détail, image et informations utiles.',
             'description' => '<p>Ce concert en plein air illustre la manière dont un projet culturel peut présenter un rendez-vous et garder son agenda à jour.</p>',
-            'image_path' => '/demo/maracuja-digital/concert-en-plein-air.png',
+            'image_media_id' => $this->media('concert-en-plein-air.png', 'Concert en plein air', 'Violoniste et pianiste sur une scène extérieure devant un public au coucher du soleil.', 'Concert en plein air.')->id,
+            'image_path' => null,
             'ticket_url' => null,
             'external_url' => null,
             'seo_title' => 'Concert en plein air — Maracuja Digital',
@@ -165,6 +193,32 @@ class MaracujaDigitalDemoSeeder extends Seeder
         if ($gallery = Gallery::query()->where('slug', 'home')->first()) {
             GalleryImage::query()->where('gallery_id', $gallery->id)->whereIn('title', ['Admin simple', 'Composants front', 'Thèmes clients'])->delete();
         }
+    }
+
+    private function media(string $filename, string $displayName, string $altText, string $caption): MediaAsset
+    {
+        if ($media = MediaAsset::query()->where('original_name', $filename)->first()) {
+            return $media;
+        }
+
+        $path = public_path('demo/maracuja-digital/'.$filename);
+
+        if (! is_file($path)) {
+            throw new \RuntimeException("Le visuel de démonstration {$filename} est introuvable.");
+        }
+
+        return app(MediaStorageService::class)->store(new UploadedFile(
+            $path,
+            $filename,
+            mime_content_type($path) ?: 'image/png',
+            null,
+            true,
+        ), [
+            'display_name' => $displayName,
+            'alt_text' => $altText,
+            'caption' => $caption,
+            'credit' => 'Maracuja Digital',
+        ]);
     }
 
     /** @return array{key: string, label: string, group: string, type: string, value: string, help_text: string} */
