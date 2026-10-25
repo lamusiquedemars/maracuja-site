@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca53d750bf3b603d6eb2d678bc9a19d0",
+    "content-hash": "15476aafada8243dd4d82e008ac26b86",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3473,6 +3473,45 @@
             "time": "2026-10-21T01:43:35+00:00"
         },
         {
+            "name": "maracuja-digital/site-core-assistant",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../maracuja-site-core/packages/assistant",
+                "reference": "3bd13ac1ebaecc3a0b4cba95911ef782276c9d11"
+            },
+            "require": {
+                "filament/filament": "^4.0",
+                "illuminate/database": "^13.0",
+                "illuminate/http": "^13.0",
+                "illuminate/support": "^13.0",
+                "illuminate/validation": "^13.0",
+                "maracuja-digital/site-core-foundation": "dev-main",
+                "php": "^8.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Maracuja\\SiteCore\\Assistant\\Providers\\AssistantServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Maracuja\\SiteCore\\Assistant\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Contrats, configuration et fournisseurs de l’Assistant IA de Maracuja Site Core.",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "maracuja-digital/site-core-audience",
             "version": "dev-main",
             "dist": {
@@ -3582,45 +3621,6 @@
                 "proprietary"
             ],
             "description": "Formulaire public et capture minimale de demandes de Maracuja Site Core.",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
-        },
-        {
-            "name": "maracuja-digital/site-core-conversations",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../maracuja-site-core/packages/conversations",
-                "reference": "77c9e74f19b01fe464347f360f3c279fb40ef174"
-            },
-            "require": {
-                "filament/filament": "^4.0",
-                "illuminate/database": "^13.0",
-                "illuminate/http": "^13.0",
-                "illuminate/support": "^13.0",
-                "illuminate/validation": "^13.0",
-                "maracuja-digital/site-core-foundation": "dev-main",
-                "php": "^8.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Maracuja\\SiteCore\\Conversations\\Providers\\ConversationsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Maracuja\\SiteCore\\Conversations\\": "src/"
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Contrats et fournisseurs IA pour les conversations Maracuja Site Core.",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -11053,10 +11053,10 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "maracuja-digital/site-core-assistant": 20,
         "maracuja-digital/site-core-audience": 20,
         "maracuja-digital/site-core-brevo": 20,
         "maracuja-digital/site-core-contact": 20,
-        "maracuja-digital/site-core-conversations": 20,
         "maracuja-digital/site-core-events": 20,
         "maracuja-digital/site-core-foundation": 20,
         "maracuja-digital/site-core-gallery": 20,

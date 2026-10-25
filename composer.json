@@ -21,7 +21,7 @@
         "laravel/tinker": "^3.0",
         "maracuja-digital/site-core-events": "dev-main",
         "maracuja-digital/site-core-contact": "dev-main",
-        "maracuja-digital/site-core-conversations": "dev-main",
+        "maracuja-digital/site-core-assistant": "dev-main",
         "maracuja-digital/site-core-audience": "dev-main",
         "maracuja-digital/site-core-brevo": "dev-main",
         "maracuja-digital/site-core-foundation": "dev-main",

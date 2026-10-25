@@ -3,6 +3,17 @@
 return [
     'product_name' => env('MARACUJA_PRODUCT_NAME', 'Maracuja Digital'),
 
+    'control' => [
+        // Observation only for now: a site remains authoritative for its local
+        // runtime flags until the policy distribution and rollback contract is
+        // explicitly enabled in a later release.
+        'policy_mode' => env('MARACUJA_CONTROL_POLICY_MODE', 'observe'),
+        'policy_manifest_path' => env(
+            'MARACUJA_CONTROL_POLICY_MANIFEST',
+            base_path('maracuja-site.manifest.json'),
+        ),
+    ],
+
     'theme' => env('MARACUJA_THEME', 'default'),
 
     'offer' => env('MARACUJA_OFFER', 'signature'),
@@ -57,48 +68,8 @@ return [
         ],
     ],
 
-    'conversations' => [
-        'retention_days' => env('MARACUJA_CONVERSATIONS_RETENTION_DAYS', 90),
-        'archive_inactive_after_hours' => env('MARACUJA_CONVERSATIONS_ARCHIVE_INACTIVE_AFTER_HOURS', 48),
-        'reference_length' => env('MARACUJA_CONVERSATIONS_REFERENCE_LENGTH', 8),
-        'public' => [
-            'handover_message' => env(
-                'MARACUJA_CONVERSATIONS_HANDOVER_MESSAGE',
-                'Votre demande de prise en charge humaine a bien été enregistrée.',
-            ),
-        ],
-        'callback' => [
-            'ask_name' => 'Bien sûr. Comment souhaitez-vous que nous vous appelions ?',
-            'invalid_name' => 'Indiquez simplement le prénom ou le nom que nous pouvons utiliser.',
-            'ask_preference' => 'Préférez-vous être contacté par WhatsApp, téléphone ou email ?',
-            'invalid_preference' => 'Répondez simplement : WhatsApp, téléphone ou email.',
-            'ask_email' => 'À quelle adresse email pouvons-nous vous répondre ?',
-            'ask_phone' => 'Quel numéro pouvons-nous utiliser pour vous contacter ?',
-            'invalid_email' => 'Cette adresse email ne semble pas valide. Pouvez-vous la vérifier ?',
-            'invalid_phone' => 'Ce numéro ne semble pas complet. Pouvez-vous le vérifier avec son indicatif ?',
-            'ask_consent' => 'Autorisez-vous notre équipe à utiliser ces coordonnées uniquement pour répondre à cette demande ? Répondez oui ou non.',
-            'invalid_consent' => 'Merci de répondre clairement par oui ou non.',
-            'consent_refused' => 'Aucune coordonnée n’a été enregistrée. Vous pouvez continuer directement sur WhatsApp.',
-            'completed' => 'Merci. Votre demande a été enregistrée et notre équipe pourra vous recontacter.',
-        ],
-        'notifications' => [
-            'enabled' => env('MARACUJA_CONVERSATIONS_NOTIFICATIONS_ENABLED', true),
-            'recipient' => env('MARACUJA_CONVERSATIONS_NOTIFICATION_EMAIL'),
-            'subject' => 'Nouvelle demande de rappel depuis le site',
-        ],
-        'ai' => [
-            'provider' => env('MARACUJA_CONVERSATIONS_AI_PROVIDER', 'fake'),
-            'model' => env('OPENAI_CONVERSATIONS_MODEL', 'gpt-5.6-luna'),
-            'reasoning_effort' => env('OPENAI_CONVERSATIONS_REASONING_EFFORT', 'low'),
-            'max_output_tokens' => env('OPENAI_CONVERSATIONS_MAX_OUTPUT_TOKENS', 600),
-            'history_messages' => env('MARACUJA_CONVERSATIONS_HISTORY_MESSAGES', 24),
-            'timeout_seconds' => env('MARACUJA_CONVERSATIONS_AI_TIMEOUT', 20),
-            'fallback_message' => env(
-                'MARACUJA_CONVERSATIONS_AI_FALLBACK_MESSAGE',
-                'Je ne peux pas répondre pour le moment. Votre demande va être transmise à une personne.',
-            ),
-        ],
-    ],
+    // The runtime Assistant package owns its technical configuration. This
+    // application only decides whether the capability is installed and active.
 
     'modules' => [
         'site_settings' => env('MARACUJA_MODULE_SITE_SETTINGS', true),
@@ -111,7 +82,7 @@ return [
         'events' => env('MARACUJA_MODULE_EVENTS', true),
         'gallery' => env('MARACUJA_MODULE_GALLERY', true),
         'contact_form' => env('MARACUJA_MODULE_CONTACT_FORM', true),
-        'conversations' => env('MARACUJA_MODULE_CONVERSATIONS', true),
+        'assistant' => env('MARACUJA_MODULE_ASSISTANT', true),
         'audience' => env('MARACUJA_MODULE_AUDIENCE', false),
         'campaigns' => env('MARACUJA_MODULE_CAMPAIGNS', false),
     ],
