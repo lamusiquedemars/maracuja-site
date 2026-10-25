@@ -43,7 +43,7 @@
     :intro="\App\Support\ContentSlots::value('home.admin.intro', 'Le client voit ses contenus, pas un cockpit inutile.')"
     heading-variant="underline">
     <x-site.grid columns="2-3">
-        <x-site.quote author="Maracuja CMS" meta="Principe produit">
+        <x-site.quote :author="config('maracuja.product_name', 'Maracuja Digital')" meta="Principe produit">
             {{ \App\Support\ContentSlots::value('home.admin.quote', 'Moins d’options visibles, plus de structure derrière.') }}
         </x-site.quote>
 

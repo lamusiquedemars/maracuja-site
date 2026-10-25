@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'product_name' => env('MARACUJA_PRODUCT_NAME', 'Maracuja CMS'),
+    'product_name' => env('MARACUJA_PRODUCT_NAME', 'Maracuja Digital'),
 
     'theme' => env('MARACUJA_THEME', 'default'),
 
