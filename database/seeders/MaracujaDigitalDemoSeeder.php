@@ -83,6 +83,7 @@ class MaracujaDigitalDemoSeeder extends Seeder
             $this->slot('services.cta.label', 'Formules', 'Présenter le besoin', 'Libellé du CTA Services.'),
         ])->each(fn (array $slot) => ContentSlot::query()->updateOrCreate(['key' => $slot['key']], $slot + ['is_locked' => true]));
 
+        $this->seedMediaLibrary();
         $this->seedPages($now);
         $this->seedNews($now);
         $this->seedArticles($now);
@@ -99,6 +100,19 @@ class MaracujaDigitalDemoSeeder extends Seeder
             ['slug' => 'actualites', 'title' => 'Actualités', 'template' => 'module', 'type' => Page::TYPE_MODULE, 'excerpt' => 'Les nouvelles et repères publiés par Maracuja Digital.', 'hero_title' => 'Actualités', 'hero_subtitle' => 'Des nouvelles du studio et des repères pour les projets en cours.', 'content' => null, 'seo_title' => 'Actualités — Maracuja Digital', 'seo_description' => 'Les actualités de Maracuja Digital.'],
             ['slug' => 'mentions-legales', 'title' => 'Mentions légales', 'template' => 'default', 'type' => Page::TYPE_TEXT, 'excerpt' => 'Informations légales.', 'hero_title' => 'Mentions légales', 'hero_subtitle' => null, 'content' => '<p><strong>Éditeur :</strong> Maracuja Digital, studio digital indépendant.</p><p><strong>Contact :</strong> <a href="mailto:contact@maracujadigital.fr">contact@maracujadigital.fr</a></p><p><strong>Site :</strong> <a href="https://maracujadigital.fr">maracujadigital.fr</a></p>', 'seo_title' => 'Mentions légales — Maracuja Digital', 'seo_description' => 'Mentions légales de Maracuja Digital.'],
         ])->each(fn (array $page) => Page::query()->updateOrCreate(['slug' => $page['slug']], $page + ['is_published' => true, 'published_at' => $now]));
+    }
+
+    /** Store the complete set of illustrations from the original starter in the media library. */
+    private function seedMediaLibrary(): void
+    {
+        collect([
+            ['ville-a-velo.png', 'Ville à vélo', 'Illustration pastel d’une rue de ville avec un vélo au premier plan.', 'Illustration de démonstration Maracuja Digital.'],
+            ['plantes-et-fleur.png', 'Plantes et fleur', 'Illustration pastel de plantes vertes et d’une fleur dans un pot.', 'Illustration de démonstration Maracuja Digital.'],
+            ['petit-dejeuner.png', 'Petit déjeuner', 'Illustration pastel d’un café, d’un croissant, de fruits et de myrtilles.', 'Illustration de démonstration Maracuja Digital.'],
+            ['route-au-soleil.png', 'Route au soleil', 'Illustration pastel d’une voiture électrique sur une route de campagne au soleil.', 'Illustration de démonstration Maracuja Digital.'],
+            ['coin-lecture.png', 'Coin lecture', 'Illustration pastel d’un fauteuil, d’une lampe, de livres et d’une plante.', 'Illustration de démonstration Maracuja Digital.'],
+            ['plage-au-coucher-du-soleil.png', 'Plage au coucher du soleil', 'Illustration pastel d’un transat et d’un parasol face à la mer au soleil couchant.', 'Illustration de démonstration Maracuja Digital.'],
+        ])->each(fn (array $image) => $this->media(...$image));
     }
 
     private function seedNews($now): void
