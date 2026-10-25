@@ -27,7 +27,8 @@ class Modules
             'pages' => app_path('Modules/Pages'),
             'news' => app_path('Modules/News'),
             'articles' => app_path('Modules/Articles'),
-            'venues' => app_path('Modules/Venues'),
+            // Venues now belongs to the Events package in the shared Core.
+            'venues' => base_path('vendor/maracuja-digital/site-core-events'),
             'events' => base_path('vendor/maracuja-digital/site-core-events'),
             'gallery' => app_path('Modules/Gallery'),
             'contact_form' => base_path('vendor/maracuja-digital/site-core-contact'),

@@ -18,6 +18,7 @@ class ModulesTest extends TestCase
             'maracuja.modules.news' => false,
             'maracuja.modules.articles' => false,
             'maracuja.modules.gallery' => false,
+            'maracuja.modules.venues' => true,
         ]);
 
         $this->assertTrue(Modules::enabled('site_settings'));
@@ -28,6 +29,7 @@ class ModulesTest extends TestCase
         $this->assertFalse(Modules::enabled('news'));
         $this->assertFalse(Modules::enabled('articles'));
         $this->assertFalse(Modules::enabled('gallery'));
+        $this->assertTrue(Modules::enabled('venues'));
     }
 
     public function test_module_can_be_disabled_explicitly(): void
