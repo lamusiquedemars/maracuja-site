@@ -6,6 +6,7 @@ use App\Filament\Resources\Articles\Pages\ManageArticles;
 use App\Modules\Media\Filament\Forms\Components\MediaPicker;
 use App\Modules\Media\Filament\Forms\Components\MaracujaRichEditor;
 use App\Modules\Media\Filament\Forms\Components\MediaIdSelect;
+use App\Modules\Media\Models\MediaAsset;
 use App\Modules\Articles\Models\Article;
 use App\Support\Modules;
 use BackedEnum;
@@ -21,12 +22,15 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Html;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class ArticleResource extends Resource
 {
@@ -74,6 +78,15 @@ class ArticleResource extends Resource
                     ->relationship('imageMedia', 'display_name')
                     ->imagesOnly()
                     ->helperText('Choisir une image de la médiathèque centrale.'),
+                Html::make(function (Get $get): HtmlString {
+                    $media = MediaAsset::query()->find($get('image_media_id'));
+
+                    return new HtmlString($media?->isImage()
+                        ? '<div style="display:grid;gap:.5rem"><img src="'.e($media->url()).'" alt="'.e($media->alt_text ?? '').'" style="max-width:480px;max-height:320px;object-fit:contain;border-radius:8px;background:#f3f4f6"><span style="font-size:.875rem;color:#6b7280">Aperçu de l’image principale</span></div>'
+                        : '<p style="color:#6b7280">Aucune image principale sélectionnée.</p>'
+                    );
+                })
+                    ->columnSpanFull(),
                 Repeater::make('body_blocks')
                     ->label('Blocs de contenu')
                     ->columnSpanFull()
