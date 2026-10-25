@@ -32,6 +32,7 @@ class Modules
             'events' => base_path('vendor/maracuja-digital/site-core-events'),
             'gallery' => app_path('Modules/Gallery'),
             'contact_form' => base_path('vendor/maracuja-digital/site-core-contact'),
+            'conversations' => base_path('vendor/maracuja-digital/site-core-conversations'),
             'audience' => base_path('vendor/maracuja-digital/site-core-audience'),
             'campaigns' => app_path('Modules/Campaigns'),
         ];

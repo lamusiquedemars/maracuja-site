@@ -100,6 +100,13 @@ class AdminPanelProvider extends PanelProvider
             );
         }
 
+        if (Modules::enabled('conversations') && is_dir(base_path('vendor/maracuja-digital/site-core-conversations/src/Filament/Resources'))) {
+            $panel->discoverResources(
+                in: base_path('vendor/maracuja-digital/site-core-conversations/src/Filament/Resources'),
+                for: 'Maracuja\\SiteCore\\Conversations\\Filament\\Resources',
+            );
+        }
+
         if (is_dir(app_path('Modules/Media/Filament/Resources'))) {
             $panel->discoverResources(
                 in: app_path('Modules/Media/Filament/Resources'),

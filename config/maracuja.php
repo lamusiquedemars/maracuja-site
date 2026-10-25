@@ -111,6 +111,7 @@ return [
         'events' => env('MARACUJA_MODULE_EVENTS', true),
         'gallery' => env('MARACUJA_MODULE_GALLERY', true),
         'contact_form' => env('MARACUJA_MODULE_CONTACT_FORM', true),
+        'conversations' => env('MARACUJA_MODULE_CONVERSATIONS', true),
         'audience' => env('MARACUJA_MODULE_AUDIENCE', false),
         'campaigns' => env('MARACUJA_MODULE_CAMPAIGNS', false),
     ],
