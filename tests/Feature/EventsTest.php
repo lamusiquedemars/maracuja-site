@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Modules\SiteSettings\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Maracuja\SiteCore\Events\Models\Event;
+use Maracuja\SiteCore\Events\Models\Participant;
 use Maracuja\SiteCore\Events\Models\Venue;
 use Tests\TestCase;
 
@@ -92,6 +93,30 @@ class EventsTest extends TestCase
             ->assertSee('Programme détaillé')
             ->assertSee('https://example.com/tickets')
             ->assertSee('https://example.com/map');
+    }
+
+    public function test_event_can_load_its_reusable_participants(): void
+    {
+        $event = Event::query()->create([
+            'title' => 'Rencontre musicale',
+            'slug' => 'rencontre-musicale',
+            'starts_at' => now()->addWeek(),
+            'is_published' => true,
+        ]);
+        $participant = Participant::query()->create([
+            'name' => 'Ensemble Maracuja',
+            'slug' => 'ensemble-maracuja',
+            'kind' => 'ensemble',
+            'is_active' => true,
+        ]);
+
+        $event->eventParticipants()->create([
+            'participant_id' => $participant->id,
+            'role' => 'Ensemble invité',
+            'sort_order' => 1,
+        ]);
+
+        $this->assertSame('Ensemble Maracuja', $event->fresh()->eventParticipants->first()->participant->name);
     }
 
     public function test_events_routes_are_disabled_when_module_is_off(): void
