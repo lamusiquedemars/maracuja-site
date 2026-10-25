@@ -18,15 +18,23 @@
     XMLHttpRequest.prototype.send = function (body) {
         if (!this.__maracujaRequestUrl?.includes('/livewire/upload-file') || !(body instanceof FormData)) return send.call(this, body);
 
-        const uploadBody = new FormData();
+        const entries = Array.from(body.entries());
 
-        body.forEach((value, key) => {
-            if (!(value instanceof File)) return uploadBody.append(key, value);
+        Promise.all(entries.map(async ([key, value]) => {
+            if (!(value instanceof File)) return [key, value];
 
-            const file = value.slice(0, value.size, value.type);
-            uploadBody.append(key, file, value.name);
-        });
+            const contents = await value.arrayBuffer();
 
-        return send.call(this, uploadBody);
+            return [key, new File([contents], value.name, {
+                type: value.type,
+                lastModified: value.lastModified,
+            })];
+        })).then((copiedEntries) => {
+            const uploadBody = new FormData();
+
+            copiedEntries.forEach(([key, value]) => uploadBody.append(key, value));
+
+            send.call(this, uploadBody);
+        }).catch(() => send.call(this, body));
     };
 })();
