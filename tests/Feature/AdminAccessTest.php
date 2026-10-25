@@ -26,6 +26,17 @@ class AdminAccessTest extends TestCase
             ->assertOk();
     }
 
+    public function test_authenticated_user_can_log_out_of_the_panel(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_admin' => true]);
+
+        $this->actingAs($admin)
+            ->post('/admin/logout')
+            ->assertRedirect('/admin/login');
+
+        $this->assertGuest();
+    }
+
     public function test_viewer_can_access_panel_in_read_only_mode(): void
     {
         $user = User::factory()->create(['role' => User::ROLE_VIEWER, 'is_admin' => false]);
