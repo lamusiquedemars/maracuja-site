@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Modules\Articles\Models\Article;
 use App\Modules\ContentSlots\Models\ContentSlot;
 use App\Modules\Gallery\Models\Gallery;
@@ -155,6 +156,8 @@ class MaracujaDigitalDemoSeeder extends Seeder
 
     private function removeLegacyStarterContent(): void
     {
+        // The starter account shipped with the old CMS demo must not survive a reference-site reset.
+        User::query()->where('email', 'admin@maracuja.test')->delete();
         NewsPost::query()->whereIn('slug', ['maracuja-cms-v1', 'front-system', 'admin-simplifiee'])->delete();
         Page::query()->where('slug', 'methode')->delete();
         SiteNotice::query()->where('title', 'Annonce démo')->delete();
