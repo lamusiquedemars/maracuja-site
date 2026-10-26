@@ -103,6 +103,9 @@
     <button class="btn btn--primary back-to-top" type="button" data-back-to-top hidden aria-label="Retour en haut">
         <span class="back-to-top__icon" aria-hidden="true">↑</span>
     </button>
+    @if (\App\Support\Modules::enabled('assistant'))
+        @include('maracuja-assistant::widget')
+    @endif
 
 </body>
 </html>

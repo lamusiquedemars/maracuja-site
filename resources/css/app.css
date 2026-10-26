@@ -40,6 +40,7 @@
 @import './modules/events.css';
 @import './modules/gallery.css';
 @import './modules/conversations.css';
+@import './modules/assistant.css';
 
 @import './themes/default.css';
 @import './themes/maracuja.css';
