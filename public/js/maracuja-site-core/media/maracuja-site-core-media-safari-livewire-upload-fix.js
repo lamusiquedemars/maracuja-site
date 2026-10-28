@@ -1,6 +1,10 @@
 /**
  * Work around WebKit 26.5+ dropping multipart bodies for disk-backed Files.
  * This is deliberately limited to Livewire's temporary-upload endpoint.
+ *
+ * A sliced Blob works for many files but is still backed by the original
+ * disk file in some Safari builds. Copying its bytes first reliably moves
+ * the request onto WebKit's in-memory upload path.
  */
 (() => {
     const isWebKit = /AppleWebKit/i.test(navigator.userAgent)
@@ -22,16 +26,23 @@
     XMLHttpRequest.prototype.send = function (body) {
         if (!this.__maracujaRequestUrl?.includes('/livewire/upload-file') || !(body instanceof FormData)) return send.call(this, body);
 
-        const uploadBody = new FormData();
+        const entries = Array.from(body.entries());
 
-        body.forEach((value, key) => {
-            if (!(value instanceof File)) return uploadBody.append(key, value);
+        Promise.all(entries.map(async ([key, value]) => {
+            if (!(value instanceof File)) return [key, value];
 
-            // A Blob created by slice() has no disk-backed file handle.
-            const file = value.slice(0, value.size, value.type);
-            uploadBody.append(key, file, value.name);
-        });
+            const contents = await value.arrayBuffer();
 
-        return send.call(this, uploadBody);
+            return [key, new File([contents], value.name, {
+                type: value.type,
+                lastModified: value.lastModified,
+            })];
+        })).then((copiedEntries) => {
+            const uploadBody = new FormData();
+
+            copiedEntries.forEach(([key, value]) => uploadBody.append(key, value));
+
+            send.call(this, uploadBody);
+        }).catch(() => send.call(this, body));
     };
 })();
