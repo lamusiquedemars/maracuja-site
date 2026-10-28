@@ -18,6 +18,7 @@ class ModulesTest extends TestCase
             'maracuja.modules.news' => false,
             'maracuja.modules.articles' => false,
             'maracuja.modules.gallery' => false,
+            'maracuja.modules.media' => true,
             'maracuja.modules.venues' => true,
         ]);
 
@@ -29,6 +30,7 @@ class ModulesTest extends TestCase
         $this->assertFalse(Modules::enabled('news'));
         $this->assertFalse(Modules::enabled('articles'));
         $this->assertFalse(Modules::enabled('gallery'));
+        $this->assertTrue(Modules::enabled('media'));
         $this->assertTrue(Modules::enabled('venues'));
     }
 
@@ -50,6 +52,21 @@ class ModulesTest extends TestCase
         config(['maracuja.modules.campaigns' => true]);
 
         $this->assertFalse(Modules::enabled('campaigns'));
+    }
+
+    public function test_brevo_is_an_audience_adapter_and_cannot_be_enabled_alone(): void
+    {
+        config([
+            'maracuja.modules.audience' => false,
+            'maracuja.modules.brevo' => true,
+        ]);
+
+        $this->assertTrue(Modules::installed('brevo'));
+        $this->assertFalse(Modules::enabled('brevo'));
+
+        config(['maracuja.modules.audience' => true]);
+
+        $this->assertTrue(Modules::enabled('brevo'));
     }
 
     public function test_developer_tool_visibility_is_separate_from_modules(): void
