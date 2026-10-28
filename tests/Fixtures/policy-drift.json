@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "site_key": "test-site",
+  "modules": {
+    "brevo": {"package": "site-core-brevo", "enabled": true}
+  }
+}
