@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
@@ -44,6 +45,29 @@ class AdminAccessTest extends TestCase
         $this->actingAs($user)
             ->get('/admin')
             ->assertOk();
+    }
+
+    public function test_administrator_can_manage_local_site_users(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_admin' => true]);
+
+        $this->actingAs($admin)
+            ->get('/admin/users')
+            ->assertOk()
+            ->assertSee('Utilisateurs');
+
+        $this->assertTrue(UserResource::canCreate());
+    }
+
+    public function test_non_administrators_cannot_manage_local_site_users(): void
+    {
+        $editor = User::factory()->create(['role' => User::ROLE_EDITOR, 'is_admin' => false]);
+
+        $this->actingAs($editor)
+            ->get('/admin/users')
+            ->assertForbidden();
+
+        $this->assertFalse(UserResource::canCreate());
     }
 
     public function test_editor_can_create_contacts(): void
