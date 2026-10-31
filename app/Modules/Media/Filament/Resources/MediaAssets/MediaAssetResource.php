@@ -5,6 +5,7 @@ namespace App\Modules\Media\Filament\Resources\MediaAssets;
 use App\Modules\Media\Enums\MediaType;
 use App\Modules\Media\Filament\Resources\MediaAssets\Pages\ManageMediaAssets;
 use App\Modules\Media\Models\MediaAsset;
+use App\Support\Modules;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -44,12 +45,12 @@ class MediaAssetResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return SchemaFacade::hasTable('media_assets');
+        return Modules::enabled('media') && SchemaFacade::hasTable('media_assets');
     }
 
     public static function canAccess(): bool
     {
-        return SchemaFacade::hasTable('media_assets') && parent::canAccess();
+        return static::shouldRegisterNavigation() && parent::canAccess();
     }
 
     public static function form(Schema $schema): Schema

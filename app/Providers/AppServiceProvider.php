@@ -2,14 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Modules\Media\Models\MediaAsset;
 use App\Modules\Media\Policies\MediaAssetPolicy;
 use App\Modules\SiteSettings\Models\SiteSetting;
-use App\Models\User;
+use App\Support\ContentPermissions;
 use App\Support\CoreFoundationAccessGate;
 use App\Support\CoreModuleAvailability;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Maracuja\SiteCore\Assistant\Models\AssistantSetting;
+use Maracuja\SiteCore\Brevo\Models\AudienceBrevoSetting;
 use Maracuja\SiteCore\Foundation\Contracts\FoundationAccessGate;
 use Maracuja\SiteCore\Foundation\Contracts\ModuleAvailability;
 use RuntimeException;
@@ -51,6 +54,18 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function (User $user, string $ability, array $arguments): ?bool {
             $subject = $arguments[0] ?? null;
             $subjectClass = is_object($subject) ? $subject::class : $subject;
+
+            if (! $user->isAdministrator() && in_array($subjectClass, [
+                User::class,
+                AudienceBrevoSetting::class,
+                AssistantSetting::class,
+            ], true)) {
+                return false;
+            }
+
+            if (! ContentPermissions::allows($user, $subjectClass)) {
+                return false;
+            }
 
             // A viewer is read-only across the entire administration. This
             // must happen before model policies, so a permissive policy on a

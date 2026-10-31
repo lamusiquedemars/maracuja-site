@@ -49,4 +49,18 @@ class ProfileTest extends TestCase
 
         $this->assertTrue(Hash::check($oldPassword, $user->fresh()->password));
     }
+
+    public function test_another_session_with_the_old_password_hash_is_rejected(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_EDITOR, 'is_admin' => false]);
+        $oldHash = $user->password;
+        $user->update(['password' => Str::random(32)]);
+
+        $this->actingAs($user)
+            ->withSession(['password_hash_web' => $oldHash])
+            ->get('/admin')
+            ->assertRedirect('/admin/login');
+
+        $this->assertGuest();
+    }
 }

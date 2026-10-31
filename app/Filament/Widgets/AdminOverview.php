@@ -25,6 +25,15 @@ class AdminOverview extends StatsOverviewWidget
 
     protected ?string $description = 'Les points utiles pour piloter le site au quotidien.';
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        // The aggregate includes several capabilities; do not disclose counts
+        // from functions outside an explicitly restricted account's selection.
+        return $user !== null && ($user->isAdministrator() || ($user->canEditContent() && $user->content_permissions === null));
+    }
+
     protected function getStats(): array
     {
         return [

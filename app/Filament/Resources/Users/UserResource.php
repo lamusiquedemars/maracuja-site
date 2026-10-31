@@ -6,10 +6,14 @@ use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
+use App\Support\ContentPermissions;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -67,13 +71,29 @@ class UserResource extends Resource
             Select::make('role')
                 ->label('Rôle')
                 ->options([
-                    User::ROLE_ADMIN => 'Administrateur',
+                    User::ROLE_ADMIN => 'Administrateur Maracuja',
+                    User::ROLE_MANAGER => 'Responsable du site',
                     User::ROLE_EDITOR => 'Éditeur',
                     User::ROLE_VIEWER => 'Lecteur',
                 ])
                 ->default(User::ROLE_EDITOR)
                 ->required()
-                ->helperText('Un administrateur gère les utilisateurs et les réglages ; un éditeur gère les contenus ; un lecteur consulte l’administration.'),
+                ->helperText('L’administrateur Maracuja gère les comptes et les réglages internes. Les autres profils accèdent uniquement aux fonctions attribuées.'),
+            Select::make('access_scope')
+                ->label('Accès aux fonctions')
+                ->options(['selected' => 'Fonctions sélectionnées', 'all' => 'Toutes les fonctions'])
+                ->default('selected')
+                ->required()
+                ->live()
+                ->dehydrated(),
+            CheckboxList::make('content_permissions')
+                ->label('Fonctions accessibles')
+                ->options(ContentPermissions::labelsForForm())
+                ->columns(2)
+                ->default([])
+                ->visible(fn (Get $get): bool => $get('access_scope') === 'selected')
+                ->helperText('Sélectionnez les fonctions accessibles. Les administrateurs ont tous les accès ; les lecteurs ne peuvent pas accéder aux demandes, conversations ou campagnes comportant des actions de modification.'),
+            Toggle::make('is_active')->label('Compte actif')->default(true),
             TextInput::make('password')
                 ->label('Mot de passe')
                 ->password()
@@ -101,6 +121,7 @@ class UserResource extends Resource
                     ->label('Rôle')
                     ->formatStateUsing(fn (?string $state): string => match ($state) {
                         User::ROLE_ADMIN => 'Administrateur',
+                        User::ROLE_MANAGER => 'Responsable du site',
                         User::ROLE_EDITOR => 'Éditeur',
                         User::ROLE_VIEWER => 'Lecteur',
                         default => 'Non défini',

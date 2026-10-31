@@ -84,7 +84,7 @@ class AdminAccessTest extends TestCase
         $this->assertFalse(Gate::forUser($viewer)->allows('create', Contact::class));
     }
 
-    public function test_ivo_is_an_administrator_even_if_his_stored_role_is_viewer(): void
+    public function test_email_alone_does_not_grant_administrator_access(): void
     {
         $ivo = User::factory()->create([
             'email' => 'ivo@maracujadigital.fr',
@@ -92,11 +92,13 @@ class AdminAccessTest extends TestCase
             'is_admin' => false,
         ]);
 
-        $this->assertTrue($ivo->isAdministrator());
-        $this->assertTrue(Gate::forUser($ivo)->allows('create', Contact::class));
+        $this->assertFalse($ivo->isAdministrator());
+        $this->assertFalse(Gate::forUser($ivo)->allows('create', Contact::class));
 
         $this->actingAs($ivo)
             ->get('/admin')
             ->assertOk();
+
+        $this->actingAs($ivo)->get('/admin/users')->assertForbidden();
     }
 }

@@ -11,6 +11,27 @@ final class CoreFoundationAccessGate implements FoundationAccessGate
     {
         $user = auth()->user();
 
-        return $user instanceof User && ($user->isAdministrator() || $user->canEditContent());
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        if ($user->isAdministrator()) {
+            return true;
+        }
+
+        $permission = match ($ability) {
+            'events.manage' => 'events',
+            'events.venues.manage' => 'venues',
+            'events.participants.manage' => 'participants',
+            'contact.requests.manage' => 'inquiries',
+            'gallery.manage' => 'gallery',
+            'media.manage' => 'media',
+            'foundation.pages.manage' => 'pages',
+            'foundation.content.manage' => 'content_slots',
+            'foundation.notices.manage' => 'notices',
+            default => null,
+        };
+
+        return $permission !== null && $user->canEditContent() && $user->canAccessContent($permission);
     }
 }
