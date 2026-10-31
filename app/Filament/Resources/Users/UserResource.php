@@ -7,6 +7,8 @@ use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
 use App\Support\ContentPermissions;
+use App\Support\DeleteSiteUser;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
@@ -53,6 +55,19 @@ class UserResource extends Resource
     public static function canEdit($record): bool
     {
         return static::canAccess();
+    }
+
+    public static function canDelete($record): bool
+    {
+        return $record instanceof User && DeleteSiteUser::allowed(auth()->user(), $record);
+    }
+
+    public static function deleteUserAction(): DeleteAction
+    {
+        return DeleteAction::make()
+            ->label('Supprimer')
+            ->authorize(fn (User $record): bool => static::canDelete($record))
+            ->using(fn (User $record): bool => DeleteSiteUser::delete($record));
     }
 
     public static function form(Schema $schema): Schema
@@ -135,6 +150,7 @@ class UserResource extends Resource
             ])
             ->defaultSort('name')
             ->recordActions([
+                static::deleteUserAction(),
                 EditAction::make()->label('Modifier'),
             ]);
     }
