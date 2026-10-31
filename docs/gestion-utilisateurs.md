@@ -37,9 +37,17 @@ Les profils sont des limites supplémentaires :
 
 Tous les utilisateurs autorisés à entrer dans le panneau peuvent voir leur
 profil et changer leur propre mot de passe. Seul l'administrateur Maracuja peut
-créer, modifier ou désactiver un autre compte. Un compte désactivé est refusé à
+créer, modifier, désactiver ou supprimer un autre compte. Un compte désactivé est refusé à
 la connexion et aux requêtes suivantes du panneau. L'interface protège le
 dernier administrateur actif et empêche l'auto-désactivation.
+
+La suppression est définitive et demande une confirmation ; elle est proposée
+depuis la liste et la fiche du compte. Un administrateur actif ne peut pas
+supprimer son propre compte. La vérification est répétée en base pendant la
+suppression afin de préserver au moins un administrateur actif. Les relations
+de médias et de conversations configurées avec `nullOnDelete` conservent leurs
+données mais perdent la référence au compte supprimé. Pour retirer un accès
+sans supprimer le compte, utiliser sa désactivation.
 
 ## Compatibilité et mise en service
 
