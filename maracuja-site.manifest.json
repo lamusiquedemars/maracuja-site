@@ -17,6 +17,7 @@
     "venues": {"package": "site-core-events", "enabled": true},
     "events": {"package": "site-core-events", "enabled": true},
     "contact_form": {"package": "site-core-contact", "enabled": true},
+    "catalogue": {"package": "site-core-catalogue", "enabled": true},
     "assistant": {"package": "site-core-assistant", "enabled": true},
     "audience": {"package": "site-core-audience", "enabled": true},
     "brevo": {"package": "site-core-brevo", "enabled": true}
