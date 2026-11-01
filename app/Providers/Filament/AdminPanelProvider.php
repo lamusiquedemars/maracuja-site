@@ -85,6 +85,7 @@ class AdminPanelProvider extends PanelProvider
                 in: base_path('vendor/maracuja-digital/site-core-catalogue/src/Filament/Resources'),
                 for: 'Maracuja\\SiteCore\\Catalogue\\Filament\\Resources',
             );
+            $panel->pages([\Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome::class]);
         }
 
         if (Modules::enabled('audience') && is_dir(base_path('vendor/maracuja-digital/site-core-audience/src/Filament/Resources'))) {
