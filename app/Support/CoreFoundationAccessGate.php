@@ -24,6 +24,7 @@ final class CoreFoundationAccessGate implements FoundationAccessGate
             'events.venues.manage' => 'venues',
             'events.participants.manage' => 'participants',
             'contact.requests.manage' => 'inquiries',
+            'catalogue.manage' => 'catalogue',
             'gallery.manage' => 'gallery',
             'media.manage' => 'media',
             'foundation.pages.manage' => 'pages',

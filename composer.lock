@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "15476aafada8243dd4d82e008ac26b86",
+    "content-hash": "e683994d49426ceec784fe09ffdb1d55",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3583,6 +3583,43 @@
                 "proprietary"
             ],
             "description": "Adaptateur Brevo optionnel pour Maracuja Site Core Audience.",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "maracuja-digital/site-core-catalogue",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../maracuja-site-core/packages/catalogue",
+                "reference": "f865c52416a915e9fe1e5bec0147642a44a801aa"
+            },
+            "require": {
+                "filament/filament": "^4.0",
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "maracuja-digital/site-core-foundation": "dev-main",
+                "php": "^8.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Maracuja\\SiteCore\\Catalogue\\Providers\\CatalogueServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Maracuja\\SiteCore\\Catalogue\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Catalogue public réutilisable pour les sites Maracuja.",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -11056,6 +11093,7 @@
         "maracuja-digital/site-core-assistant": 20,
         "maracuja-digital/site-core-audience": 20,
         "maracuja-digital/site-core-brevo": 20,
+        "maracuja-digital/site-core-catalogue": 20,
         "maracuja-digital/site-core-contact": 20,
         "maracuja-digital/site-core-events": 20,
         "maracuja-digital/site-core-foundation": 20,

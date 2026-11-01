@@ -40,6 +40,7 @@ class Modules
             'gallery' => app_path('Modules/Gallery'),
             'media' => base_path('vendor/maracuja-digital/site-core-media'),
             'contact_form' => base_path('vendor/maracuja-digital/site-core-contact'),
+            'catalogue' => base_path('vendor/maracuja-digital/site-core-catalogue'),
             'assistant' => base_path('vendor/maracuja-digital/site-core-assistant'),
             'audience' => base_path('vendor/maracuja-digital/site-core-audience'),
             'brevo' => base_path('vendor/maracuja-digital/site-core-brevo'),

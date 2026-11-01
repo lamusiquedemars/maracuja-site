@@ -40,6 +40,10 @@ return [
         'public_path' => env('MARACUJA_EVENTS_PUBLIC_PATH', 'evenements'),
     ],
 
+    'catalogue' => [
+        'public_path' => env('MARACUJA_CATALOGUE_PUBLIC_PATH', 'catalogue'),
+    ],
+
     'media' => [
         'disk' => 'public',
         'images_directory' => 'media/images',
@@ -83,6 +87,7 @@ return [
         'gallery' => env('MARACUJA_MODULE_GALLERY', true),
         'media' => env('MARACUJA_MODULE_MEDIA', true),
         'contact_form' => env('MARACUJA_MODULE_CONTACT_FORM', true),
+        'catalogue' => env('MARACUJA_MODULE_CATALOGUE', false),
         'assistant' => env('MARACUJA_MODULE_ASSISTANT', true),
         'audience' => env('MARACUJA_MODULE_AUDIENCE', false),
         'brevo' => env('MARACUJA_MODULE_BREVO', true),
@@ -107,6 +112,7 @@ return [
             'gallery' => false,
             'media' => true,
             'contact_form' => true,
+            'catalogue' => false,
             'audience' => false,
             'brevo' => false,
             'campaigns' => false,
@@ -123,6 +129,7 @@ return [
             'gallery' => true,
             'media' => true,
             'contact_form' => true,
+            'catalogue' => false,
             'audience' => false,
             'brevo' => false,
             'campaigns' => false,
@@ -139,6 +146,7 @@ return [
             'gallery' => true,
             'media' => true,
             'contact_form' => true,
+            'catalogue' => true,
             'audience' => true,
             'brevo' => true,
             'campaigns' => false,

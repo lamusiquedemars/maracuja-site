@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
@@ -34,6 +35,11 @@ if (Modules::enabled('articles')) {
 if (Modules::enabled('events')) {
     Route::get('/'.config('maracuja.events.public_path', 'evenements'), [EventController::class, 'index'])->name('events.index');
     Route::get('/'.config('maracuja.events.public_path', 'evenements').'/{slug}', [EventController::class, 'show'])->name('events.show');
+}
+
+if (Modules::enabled('catalogue')) {
+    Route::get('/'.config('maracuja.catalogue.public_path', 'catalogue'), [CatalogueController::class, 'index'])->name('catalogue.index');
+    Route::get('/'.config('maracuja.catalogue.public_path', 'catalogue').'/{slug}', [CatalogueController::class, 'show'])->name('catalogue.show');
 }
 
 if (Modules::enabled('contact_form')) {

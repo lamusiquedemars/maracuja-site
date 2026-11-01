@@ -15,6 +15,9 @@ use Maracuja\SiteCore\Audience\Models\AudienceContact;
 use Maracuja\SiteCore\Audience\Models\AudienceSegment;
 use Maracuja\SiteCore\Audience\Models\SegmentMessage;
 use Maracuja\SiteCore\Contact\Models\Inquiry;
+use Maracuja\SiteCore\Catalogue\Models\CatalogueCategory;
+use Maracuja\SiteCore\Catalogue\Models\CatalogueCollection;
+use Maracuja\SiteCore\Catalogue\Models\CatalogueItem;
 use Maracuja\SiteCore\Events\Models\Event;
 use Maracuja\SiteCore\Events\Models\Participant;
 use Maracuja\SiteCore\Events\Models\Venue;
@@ -29,6 +32,7 @@ final class ContentPermissions
             'articles' => 'Articles', 'media' => 'Médias', 'gallery' => 'Galeries',
             'events' => 'Événements', 'venues' => 'Lieux', 'participants' => 'Intervenants',
             'inquiries' => 'Demandes reçues', 'audience' => 'Audience et campagnes',
+            'catalogue' => 'Catalogue',
         ];
     }
 
@@ -39,6 +43,7 @@ final class ContentPermissions
             NewsPost::class => 'news', Article::class => 'articles', MediaAsset::class => 'media',
             Gallery::class => 'gallery', Event::class => 'events', Venue::class => 'venues',
             Participant::class => 'participants', Inquiry::class => 'inquiries',
+            CatalogueCollection::class, CatalogueCategory::class, CatalogueItem::class => 'catalogue',
             AudienceContact::class, AudienceSegment::class, SegmentMessage::class => 'audience',
             default => null,
         };
