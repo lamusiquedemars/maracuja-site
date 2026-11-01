@@ -1,3 +1,10 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+/* Sources are explicit so module views survive Tailwind's production build. */
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../vendor/maracuja-digital/site-core-catalogue/resources/views/**/*';
+
 /* Administration extensions. Kept independent from the public-site stylesheet. */
 .catalogue-workspace {
     display: grid;
