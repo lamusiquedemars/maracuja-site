@@ -2,6 +2,8 @@
 
 Date: 2026-06-01
 
+> **Priorité Audience/Brevo.** La communication marketing est l’objectif commercial P2 ; se référer à la roadmap de Maracuja Site Core pour la décision canonique. La campagne complète doit être migrée et recettée avant toute promesse commerciale. Les e-mails transactionnels restent distincts des campagnes marketing.
+
 Ce document sert de point d’entrée rapide pour reprendre le travail sur Maracuja CMS Starter et ses premiers usages réels, notamment Atelier Ivo Incidit.
 
 ## État général
