@@ -94,6 +94,9 @@ class AdminPanelProvider extends PanelProvider
                 in: base_path('vendor/maracuja-digital/site-core-audience/src/Filament/Resources'),
                 for: 'Maracuja\SiteCore\Audience\Filament\Resources',
             );
+            $panel->pages([
+                \Maracuja\SiteCore\Audience\Filament\Pages\AudienceHome::class,
+            ]);
         }
 
         if (Modules::enabled('brevo') && is_dir(base_path('vendor/maracuja-digital/site-core-brevo/src/Filament/Resources'))) {
