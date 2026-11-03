@@ -4,6 +4,7 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../vendor/maracuja-digital/site-core-catalogue/resources/views/**/*';
+@source '../../../../vendor/maracuja-digital/site-core-audience/resources/views/**/*';
 
 /* Administration extensions. Kept independent from the public-site stylesheet. */
 .catalogue-workspace {
