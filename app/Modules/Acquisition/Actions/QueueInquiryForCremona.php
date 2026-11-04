@@ -14,8 +14,8 @@ class QueueInquiryForCremona
             return null;
         }
         $delivery = AcquisitionDelivery::query()->firstOrCreate(['inquiry_id' => $inquiry->getKey()], [
-            'idempotency_key' => 'maracuja-cms:inquiry:'.$inquiry->getKey(), 'status' => 'pending',
-            'payload' => ['source' => ['channel' => 'website', 'name' => 'maracuja-cms', 'site_reference' => config('maracuja.acquisition.cremona.site_reference'), 'form_reference' => 'contact-v1'],
+            'idempotency_key' => 'maracuja-site:inquiry:'.$inquiry->getKey(), 'status' => 'pending',
+            'payload' => ['source' => ['channel' => 'website', 'name' => 'maracuja-site', 'site_reference' => config('maracuja.acquisition.cremona.site_reference'), 'form_reference' => 'contact-v1'],
                 'attribution' => ['source' => $inquiry->attribution_source, 'medium' => $inquiry->attribution_medium, 'campaign' => $inquiry->attribution_campaign, 'first_touch' => $inquiry->attribution_first_touch, 'last_touch' => $inquiry->attribution_last_touch, 'method' => $inquiry->attribution_method, 'confidence' => $inquiry->attribution_confidence],
                 'contact' => ['name' => $inquiry->name, 'email' => $inquiry->email, 'phone' => $inquiry->phone],
                 'request' => ['subject' => $inquiry->subject, 'message' => $inquiry->message],

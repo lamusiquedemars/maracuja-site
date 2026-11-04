@@ -14,12 +14,12 @@ class QueueContactMessageForCremona
             return null;
         }
 
-        $key = 'maracuja-cms:contact:'.str()->ulid();
+        $key = 'maracuja-site:contact:'.str()->ulid();
         $delivery = AcquisitionDelivery::query()->create([
             'idempotency_key' => $key,
             'status' => 'pending',
             'payload' => [
-                'source' => ['channel' => 'website', 'name' => 'maracuja-cms', 'site_reference' => config('maracuja.acquisition.cremona.site_reference'), 'form_reference' => 'contact'],
+                'source' => ['channel' => 'website', 'name' => 'maracuja-site', 'site_reference' => config('maracuja.acquisition.cremona.site_reference'), 'form_reference' => 'contact'],
                 'attribution' => $message->metadata['attribution'] ?? [],
                 'contact' => ['name' => $message->name, 'email' => $message->email, 'phone' => $message->phone],
                 'request' => ['subject' => $message->subject, 'message' => $message->message],

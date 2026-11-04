@@ -405,7 +405,7 @@ class DatabaseSeeder extends Seeder
             'published_at' => now(),
         ]);
 
-        NewsPost::query()->updateOrCreate(['slug' => 'maracuja-cms-v1'], [
+        NewsPost::query()->updateOrCreate(['slug' => 'maracuja-site-v1'], [
             'title' => 'Maracuja CMS V1',
             'excerpt' => 'Le starter prend forme avec Pages, Actualités, Galerie et Contact.',
             'content' => '<p>Cette première version sert de base aux sites vitrines administrables.</p>',
