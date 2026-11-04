@@ -134,9 +134,9 @@ Le contrat doit rester versionné et indépendant des écrans. Il comprendra pro
 
 Les routes de lecture renvoient uniquement les données de l'organisation authentifiée. Les sites ne reçoivent jamais les credentials Google ni les données d'un autre client.
 
-### Maracuja CMS multi-site
+### Maracuja Site
 
-Le nouveau `maracuja-cms` recevra le module après validation du pilote. Il gérera son activation et sa configuration par site, sans bloquer la réalisation actuelle.
+Le module sera distribué par Maracuja Site Core après validation du pilote. Chaque Maracuja Site gérera son activation et sa configuration sans bloquer la réalisation actuelle.
 
 ## 4. Flux cible
 
@@ -390,7 +390,7 @@ Résultat : la capacité peut être installée sur un nouveau site avec peu de c
 - remonter les corrections de Marcos dans le starter ;
 - séparer traductions et configuration métier ;
 - stabiliser le contrat de version entre sites et Cremona ;
-- intégrer le module au `maracuja-cms` multi-site ;
+- distribuer le module via Maracuja Site Core ;
 - définir les offres dans lesquelles le module est disponible ;
 - créer une checklist d'installation client.
 

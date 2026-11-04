@@ -4,7 +4,7 @@
 
 - Statut : resolu le 16 juillet 2026.
 - Signale le : 15 juillet 2026.
-- Environnement constate : `http://maracuja-cms-starter.test` sous Herd.
+- Environnement constaté : `http://maracuja-site.test` sous Herd.
 
 Les images de la galerie principale de la page d'accueil ne s'affichent pas,
 alors que des fichiers de `public/storage` sont accessibles directement.
