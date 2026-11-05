@@ -57,7 +57,7 @@ class RestoreMaracujaDigitalMediaCommand extends Command
                 continue;
             }
 
-            $source = public_path('demo/maracuja-digital/'.$filename);
+            $source = database_path('seeders/assets/maracuja-digital/'.$filename);
 
             if (! is_file($source)) {
                 $this->error("Visuel source introuvable : {$filename}");

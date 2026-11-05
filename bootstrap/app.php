@@ -6,6 +6,7 @@ use App\Console\Commands\MaracujaMediaAuditCommand;
 use App\Console\Commands\MaracujaMediaMigrateCommand;
 use App\Console\Commands\MaracujaMediaThumbnailsCommand;
 use App\Console\Commands\MaracujaPolicyReportCommand;
+use App\Console\Commands\AdoptMaracujaDigitalDemoMediaCommand;
 use App\Console\Commands\RestoreMaracujaDigitalMediaCommand;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         MaracujaMediaMigrateCommand::class,
         MaracujaMediaThumbnailsCommand::class,
         MaracujaPolicyReportCommand::class,
+        AdoptMaracujaDigitalDemoMediaCommand::class,
         RestoreMaracujaDigitalMediaCommand::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {

@@ -163,7 +163,7 @@ class MediaAuditService
                 return [];
             }
 
-            $assets = DB::table('media_assets')->get(['id', 'disk', 'path']);
+            $assets = DB::table('media_assets')->get(['id', 'disk', 'path', 'variants']);
         } catch (Throwable) {
             return [];
         }
@@ -175,7 +175,14 @@ class MediaAuditService
             ->flip();
         $cataloguedPaths = $assets
             ->where('disk', 'public')
-            ->pluck('path')
+            ->flatMap(function (object $asset): array {
+                $variants = json_decode((string) ($asset->variants ?? '[]'), true);
+
+                return [
+                    $asset->path,
+                    ...collect(is_array($variants) ? $variants : [])->pluck('path')->filter()->all(),
+                ];
+            })
             ->flip();
         $anomalies = [];
 
@@ -380,7 +387,7 @@ class MediaAuditService
 
     private function isAllowedPrivatePath(string $path): bool
     {
-        return Str::startsWith($path, ['imports/', 'exports/', 'temporary/', 'livewire-tmp/']);
+        return Str::startsWith($path, ['media/originals/', 'imports/', 'exports/', 'temporary/', 'livewire-tmp/']);
     }
 
     /** @return array{type: string, location: string, detail: string} */

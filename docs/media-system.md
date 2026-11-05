@@ -92,9 +92,10 @@ storage/app/private/livewire-tmp
 métier permanent ne doit y rester. Les imports Audience ne sont pas des médias
 publics et ne figurent pas dans la médiathèque.
 
-Les assets livrés avec le code et suivis par Git, par exemple `public/build` ou
-`public/demo`, ne sont pas des médias administrables et restent hors du module
-Media.
+Les assets livrés avec le code et suivis par Git, par exemple `public/build`,
+ne sont pas des médias administrables. Les visuels de démonstration destinés
+au seeding sont placés hors du webroot, dans `database/seeders/assets` : ils
+ne doivent jamais servir directement une page publique.
 
 ### Emplacements interdits
 

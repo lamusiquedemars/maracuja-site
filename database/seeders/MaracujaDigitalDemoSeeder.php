@@ -161,9 +161,7 @@ class MaracujaDigitalDemoSeeder extends Seeder
                     'credit' => 'Maracuja Digital',
                     'alt_text' => $image['alt_text'],
                     'media_asset_id' => $media->id,
-                    // Kept as a compatibility fallback for the legacy non-nullable column.
-                    // The public renderer prefers media_asset_id.
-                    'image_path' => '/demo/maracuja-digital/'.$image['file'],
+                    'image_path' => null,
                     'width' => $media->width,
                     'height' => $media->height,
                     'position' => $image['position'],
@@ -215,7 +213,7 @@ class MaracujaDigitalDemoSeeder extends Seeder
             return $media;
         }
 
-        $path = public_path('demo/maracuja-digital/'.$filename);
+        $path = database_path('seeders/assets/maracuja-digital/'.$filename);
 
         if (! is_file($path)) {
             throw new \RuntimeException("Le visuel de démonstration {$filename} est introuvable.");
