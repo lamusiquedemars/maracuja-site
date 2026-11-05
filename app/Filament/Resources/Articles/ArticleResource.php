@@ -170,7 +170,7 @@ class ArticleResource extends Resource
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('image_path')
+                ImageColumn::make('imageMedia.path')
                     ->disk('public')
                     ->label('Image'),
                 IconColumn::make('is_published')

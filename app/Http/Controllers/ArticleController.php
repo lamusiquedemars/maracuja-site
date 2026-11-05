@@ -20,7 +20,7 @@ class ArticleController extends Controller
             'settings' => SiteSetting::current(),
             'label' => ContentSlots::value('articles.public_label', 'Articles'),
             'subtitle' => ContentSlots::value('articles.index.subtitle', 'Articles éditoriaux publiés sur le site.'),
-            'posts' => Article::query()->forListing()->paginate(9),
+            'posts' => Article::query()->with('imageMedia')->forListing()->paginate(9),
         ]);
     }
 
@@ -29,6 +29,7 @@ class ArticleController extends Controller
         abort_unless(Modules::enabled('articles'), 404);
 
         $post = Article::query()
+            ->with('imageMedia')
             ->where('slug', $slug)
             ->visible()
             ->firstOrFail();
