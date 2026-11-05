@@ -19,6 +19,15 @@ Les raccourcis de gestion affichés dans le menu viennent de Cremona ; ils sont
 déjà filtrés par organisation, module actif et droits de l'utilisateur. Le
 site ne crée jamais de droit Cremona.
 
+Pour terminer une première connexion, l'utilisateur doit être membre actif de
+l'organisation raccordée dans Cremona. Une même adresse e-mail déjà présente
+dans le site mais non reliée à un identifiant Cremona est refusée : le
+rattachement d'un compte existant doit rester une opération explicite.
+
+Le pilote Demo Maracuja est publié. La recette commence par
+`https://site.maracujadigital.fr/admin`, avec un membre actif de
+**Demo Maracuja**.
+
 La procédure d'activation complète, y compris les clés persistantes et la
 recette sécurité, est conservée dans le dépôt Cremona :
 `docs/sso-site-pilote.md`.
