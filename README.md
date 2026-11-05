@@ -110,6 +110,7 @@ MARACUJA_GALLERY_LAYOUT=carousel
 - `docs/js-system.md`: progressive JavaScript modules.
 - `docs/seo-system.md`: SEO, sitemap and robots.
 - `docs/theme-system.md`: themes and client visual variants.
+- `docs/sso-cremona.md`: pilot single sign-on with Cremona.
 
 ## Delivery Check
 

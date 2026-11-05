@@ -2,14 +2,18 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\CremonaSsoLogin;
 use App\Filament\Widgets\AdminOverview;
 use App\Filament\Widgets\AdminWelcome;
 use App\Modules\SiteSettings\Models\SiteSetting;
+use App\Support\CremonaPortal;
 use App\Support\Modules;
+use Filament\Auth\Pages\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -23,6 +27,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Maracuja\SiteCore\Audience\Filament\Pages\AudienceHome;
+use Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -33,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->login()
+            ->login(config('cremona-portal.enabled') ? CremonaSsoLogin::class : Login::class)
             ->profile()
             ->brandName(fn (): string => Schema::hasTable('site_settings')
                 ? SiteSetting::query()->value('site_name') ?: config('maracuja.product_name', 'Maracuja CMS')
@@ -58,6 +64,32 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 AdminWelcome::class,
                 AdminOverview::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Clients')
+                    ->group('Gestion de l’activité')
+                    ->icon('heroicon-o-users')
+                    ->sort(10)
+                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'clients']))
+                    ->visible(fn (): bool => CremonaPortal::has('clients')),
+                NavigationItem::make('Demandes')
+                    ->group('Gestion de l’activité')
+                    ->icon('heroicon-o-inbox-arrow-down')
+                    ->sort(20)
+                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'requests']))
+                    ->visible(fn (): bool => CremonaPortal::has('requests')),
+                NavigationItem::make('Rendez-vous')
+                    ->group('Gestion de l’activité')
+                    ->icon('heroicon-o-calendar-days')
+                    ->sort(30)
+                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'appointments']))
+                    ->visible(fn (): bool => CremonaPortal::has('appointments')),
+                NavigationItem::make('Devis')
+                    ->group('Gestion de l’activité')
+                    ->icon('heroicon-o-document-currency-euro')
+                    ->sort(40)
+                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'quotes']))
+                    ->visible(fn (): bool => CremonaPortal::has('quotes')),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -86,7 +118,7 @@ class AdminPanelProvider extends PanelProvider
                 in: base_path('vendor/maracuja-digital/site-core-catalogue/src/Filament/Resources'),
                 for: 'Maracuja\\SiteCore\\Catalogue\\Filament\\Resources',
             );
-            $panel->pages([\Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome::class]);
+            $panel->pages([CatalogueHome::class]);
         }
 
         if (Modules::enabled('audience') && is_dir(base_path('vendor/maracuja-digital/site-core-audience/src/Filament/Resources'))) {
@@ -95,7 +127,7 @@ class AdminPanelProvider extends PanelProvider
                 for: 'Maracuja\SiteCore\Audience\Filament\Resources',
             );
             $panel->pages([
-                \Maracuja\SiteCore\Audience\Filament\Pages\AudienceHome::class,
+                AudienceHome::class,
             ]);
         }
 
