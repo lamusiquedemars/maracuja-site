@@ -72,7 +72,9 @@ class AdoptMaracujaDigitalDemoMediaCommand extends Command
                     ->where('id', $entry['id'])
                     ->update([
                         $entry['media_column'] => $media->getKey(),
-                        'image_path' => null,
+                        // The historical gallery schema still requires a value.
+                        // Keep the canonical catalogued path, never the legacy demo URL.
+                        'image_path' => $entry['table'] === 'gallery_images' ? $media->path : null,
                         'updated_at' => now(),
                     ]);
             }

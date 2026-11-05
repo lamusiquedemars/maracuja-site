@@ -161,7 +161,9 @@ class MaracujaDigitalDemoSeeder extends Seeder
                     'credit' => 'Maracuja Digital',
                     'alt_text' => $image['alt_text'],
                     'media_asset_id' => $media->id,
-                    'image_path' => null,
+                    // The legacy gallery column is still non-nullable on older sites.
+                    // It mirrors the central path and never points to a public demo file.
+                    'image_path' => $media->path,
                     'width' => $media->width,
                     'height' => $media->height,
                     'position' => $image['position'],
