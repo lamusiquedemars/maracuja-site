@@ -9,12 +9,16 @@ use App\Modules\SiteSettings\Models\SiteSetting;
 use App\Support\ContentPermissions;
 use App\Support\CoreFoundationAccessGate;
 use App\Support\CoreModuleAvailability;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
+use Maracuja\SiteCore\Assistant\Events\AssistantContactRequested;
 use Maracuja\SiteCore\Assistant\Models\AssistantSetting;
 use Maracuja\SiteCore\Brevo\Models\AudienceBrevoSetting;
 use Maracuja\SiteCore\Foundation\Contracts\FoundationAccessGate;
 use Maracuja\SiteCore\Foundation\Contracts\ModuleAvailability;
+use Maracuja\SiteCore\Contact\Mail\ContactRequestReceived;
 use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,6 +51,18 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(MediaAsset::class, MediaAssetPolicy::class);
         $this->registerRoleGate();
+        $this->registerAssistantContactNotification();
+    }
+
+    private function registerAssistantContactNotification(): void
+    {
+        Event::listen(AssistantContactRequested::class, function (AssistantContactRequested $event): void {
+            $settings = SiteSetting::current();
+
+            if ($settings->contact_form_send_admin_email && filled($settings->contact_email)) {
+                Mail::to($settings->contact_email)->send(new ContactRequestReceived($event->request));
+            }
+        });
     }
 
     private function registerRoleGate(): void
