@@ -87,7 +87,7 @@ return [
         'gallery' => env('MARACUJA_MODULE_GALLERY', true),
         'media' => env('MARACUJA_MODULE_MEDIA', true),
         'contact_form' => env('MARACUJA_MODULE_CONTACT_FORM', true),
-        'catalogue' => env('MARACUJA_MODULE_CATALOGUE', false),
+        'catalogue' => env('MARACUJA_MODULE_CATALOGUE', true),
         'assistant' => env('MARACUJA_MODULE_ASSISTANT', true),
         'audience' => env('MARACUJA_MODULE_AUDIENCE', false),
         'brevo' => env('MARACUJA_MODULE_BREVO', true),
