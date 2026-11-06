@@ -7,6 +7,7 @@ use Filament\Auth\Pages\Login;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
@@ -33,7 +34,14 @@ final class CremonaSsoLogin extends Login
         }
 
         $data = $this->form->getState();
-        $result = app(CremonaPortalAuthenticator::class)->authenticate((string) ($data['email'] ?? ''), (string) ($data['password'] ?? ''));
+        $email = strtolower(trim((string) ($data['email'] ?? '')));
+        $user = \App\Models\User::query()->whereRaw('lower(email) = ?', [$email])->first();
+
+        if (! $user instanceof \App\Models\User || ! $user->is_active || ! Hash::check((string) ($data['password'] ?? ''), $user->password)) {
+            throw ValidationException::withMessages(['data.email' => 'Adresse e-mail ou mot de passe incorrect.']);
+        }
+
+        $result = app(CremonaPortalAuthenticator::class)->authenticate($user);
 
         if ($result === null) {
             throw ValidationException::withMessages(['data.email' => 'Adresse e-mail ou mot de passe incorrect.']);

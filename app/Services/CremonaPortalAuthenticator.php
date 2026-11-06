@@ -3,23 +3,23 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 final class CremonaPortalAuthenticator
 {
     /** @return array{user: User, identity: array<string, mixed>}|null */
-    public function authenticate(string $email, string $password): ?array
+    public function authenticate(User $user): ?array
     {
         $clientId = (string) config('cremona-portal.client_id');
-        $email = strtolower(trim($email));
+        $email = strtolower(trim($user->email));
+        $subject = (string) $user->getAuthIdentifier();
         $timestamp = time();
-        $signature = hash_hmac('sha256', $clientId.'|'.$email.'|'.$timestamp, (string) config('cremona-portal.logout_secret'));
+        $signature = hash_hmac('sha256', $clientId.'|'.$subject.'|'.$email.'|'.$timestamp, (string) config('cremona-portal.logout_secret'));
 
         $response = Http::acceptJson()->timeout(10)->post(config('cremona-portal.issuer').'/api/v1/site-portal/authenticate', [
             'client_id' => $clientId,
+            'subject' => $subject,
             'email' => $email,
-            'password' => $password,
             'timestamp' => $timestamp,
             'signature' => $signature,
         ]);
@@ -29,21 +29,9 @@ final class CremonaPortalAuthenticator
             return null;
         }
 
-        $user = User::query()->firstOrNew(['cremona_subject' => $identity['subject']]);
-        if (! $user->exists && User::query()->where('email', $identity['email'])->exists()) {
+        if ((string) $identity['email'] !== $email) {
             return null;
         }
-
-        $role = config('cremona-portal.default_role', User::ROLE_ADMIN);
-        $user->forceFill([
-            'name' => $identity['name'],
-            'email' => $identity['email'],
-            'password' => $user->exists ? $user->password : Hash::make(str()->random(64)),
-            'role' => $user->exists ? $user->role : $role,
-            'is_admin' => $user->exists ? $user->is_admin : $role === User::ROLE_ADMIN,
-            'is_active' => true,
-            'content_permissions' => $user->exists ? $user->content_permissions : null,
-        ])->save();
 
         return ['user' => $user, 'identity' => $identity];
     }
