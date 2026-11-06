@@ -183,7 +183,9 @@ final class CremonaSsoController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('filament.admin.auth.login');
+        // A logout ends at the public site. Returning directly to the SSO
+        // login would immediately expose the Cremona connection screen again.
+        return redirect()->route('home');
     }
 
     private function enabled(): bool

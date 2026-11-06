@@ -59,7 +59,7 @@ class CremonaSsoRedirectTest extends TestCase
         $this->actingAs($user)->withSession([
             'cremona_sso_logout' => ['state' => 'matching-state', 'expires_at' => now()->addMinute()->getTimestamp()],
         ])->get(route('cremona-sso.logout.complete', ['state' => 'matching-state']))
-            ->assertRedirect(route('filament.admin.auth.login'));
+            ->assertRedirect(route('home'));
 
         $this->assertGuest();
     }
