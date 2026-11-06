@@ -16,19 +16,19 @@ final class CremonaSsoLogin extends Login
 
     public function getHeading(): string|Htmlable|null
     {
-        return 'Administration du site';
+        return 'Connexion à l’administration';
     }
 
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Connectez-vous avec votre compte Maracuja pour gérer le site et votre activité.';
+        return 'Utilisez votre compte Cremona pour gérer le site et votre activité. Votre mot de passe reste uniquement dans Cremona.';
     }
 
     protected function getFormActions(): array
     {
         return [
-            Action::make('continueWithMaracuja')
-                ->label('Continuer avec Maracuja')
+            Action::make('continueWithCremona')
+                ->label('Se connecter avec Cremona')
                 ->url(route('cremona-sso.redirect')),
         ];
     }
