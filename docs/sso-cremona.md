@@ -33,6 +33,22 @@ Il n’existe ni URL de retour libre, ni mot de passe recopié, ni jeton OAuth
 conservé par le site. Un échec ferme au minimum aucune session par accident :
 l’utilisateur revient au site et recommence sa connexion si nécessaire.
 
+Safari peut ne pas transmettre `Origin` lors d’un POST entre domaines. Cremona
+contrôle alors l’origine exacte fournie par `Referer`, réduite au schéma, hôte
+et port du site déclaré. Le retour reste fixe et ne dépend jamais du navigateur.
+
+## Adresses et rôles
+
+| Personne | Point d’entrée à communiquer | Rôle |
+| --- | --- | --- |
+| Visiteur | Domaine public du client | Aucun accès à l’administration. |
+| Membre ou administrateur de l’organisation | `https://domaine-du-client/admin` | Contenus du site et raccourcis métier autorisés. |
+| Administrateur Maracuja | Espace plateforme Cremona | Organisations, droits, raccordements et sécurité. |
+
+`/admin/sso/*` et `/site-portal/logout` sont des URLs techniques courtes,
+non navigables et non communicables aux utilisateurs. Les ouvrir directement
+doit être refusé : seul le bouton de l’interface lance le flux complet.
+
 Pour terminer une première connexion, l'utilisateur doit être membre actif de
 l'organisation raccordée dans Cremona. Une même adresse e-mail déjà présente
 dans le site mais non reliée à un identifiant Cremona est refusée : le

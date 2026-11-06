@@ -44,7 +44,7 @@ class CremonaSsoRedirectTest extends TestCase
             ->assertSee('https://cremona.example.test/site-portal/logout', false)
             ->assertSee('name="client_id" value="site-demo-client"', false);
         $response->assertSessionHas('cremona_sso_logout.state');
-        $response->assertHeader('Referrer-Policy', 'no-referrer');
+        $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     public function test_the_site_only_closes_its_session_after_the_matching_central_logout_returns(): void

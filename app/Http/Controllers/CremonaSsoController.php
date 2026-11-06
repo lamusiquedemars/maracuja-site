@@ -157,7 +157,9 @@ final class CremonaSsoController extends Controller
                 'clientId' => config('cremona-portal.client_id'),
                 'state' => $state,
             ])
-            ->header('Referrer-Policy', 'no-referrer');
+            // Safari can omit Origin on a cross-site form POST. Keep the
+            // browser's strict-origin Referer available for Cremona to check.
+            ->header('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     public function completeLogout(Request $request): RedirectResponse
