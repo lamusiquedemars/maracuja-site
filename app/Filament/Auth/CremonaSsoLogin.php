@@ -16,19 +16,19 @@ final class CremonaSsoLogin extends Login
 
     public function getHeading(): string|Htmlable|null
     {
-        return 'Connexion à l’administration';
+        return 'Accès à votre espace de gestion';
     }
 
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Utilisez votre compte Cremona pour gérer le site et votre activité. Votre mot de passe reste uniquement dans Cremona.';
+        return 'Connectez-vous pour gérer votre site et les outils associés.';
     }
 
     protected function getFormActions(): array
     {
         return [
             Action::make('continueWithCremona')
-                ->label('Se connecter avec Cremona')
+                ->label('Se connecter')
                 ->url(route('cremona-sso.redirect')),
         ];
     }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Filament\Auth\CremonaSsoLogin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
@@ -16,6 +17,10 @@ class AdminAccessTest extends TestCase
     public function test_filament_login_page_is_available(): void
     {
         $this->get('/admin/login')->assertOk();
+
+        $login = app(CremonaSsoLogin::class);
+        $this->assertSame('Accès à votre espace de gestion', $login->getHeading());
+        $this->assertSame('Connectez-vous pour gérer votre site et les outils associés.', $login->getSubheading());
     }
 
     public function test_admin_user_can_access_panel(): void
