@@ -6,6 +6,7 @@ return [
     'enabled' => (bool) env('CREMONA_SSO_ENABLED', false),
     'issuer' => rtrim((string) env('CREMONA_SSO_ISSUER', 'https://cremona.maracujadigital.fr'), '/'),
     'client_id' => env('CREMONA_SSO_CLIENT_ID'),
+    'logout_secret' => env('CREMONA_SSO_LOGOUT_SECRET'),
     'redirect_uri' => env('CREMONA_SSO_REDIRECT_URI', rtrim((string) env('APP_URL'), '/').'/admin/sso/callback'),
 
     // This is an explicit pilot choice. A reusable rollout will map local site

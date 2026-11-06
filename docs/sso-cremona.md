@@ -33,9 +33,12 @@ Il n’existe ni URL de retour libre, ni mot de passe recopié, ni jeton OAuth
 conservé par le site. Un échec ferme au minimum aucune session par accident :
 l’utilisateur revient au site et recommence sa connexion si nécessaire.
 
-Safari peut ne pas transmettre `Origin` lors d’un POST entre domaines. Cremona
-contrôle alors l’origine exacte fournie par `Referer`, réduite au schéma, hôte
-et port du site déclaré. Le retour reste fixe et ne dépend jamais du navigateur.
+La déconnexion fédérée ne dépend ni de `Origin` ni de `Referer`, variables selon
+les navigateurs. Le site signe la demande avec une preuve HMAC liée au client
+OAuth public et à son état éphémère. Le secret est propre au raccordement,
+conservé uniquement dans les fichiers d'environnement des deux serveurs et
+jamais transmis au navigateur. Le retour reste fixe et ne dépend jamais du
+navigateur.
 
 ## Adresses et rôles
 

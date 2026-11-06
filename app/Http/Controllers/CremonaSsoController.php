@@ -145,6 +145,7 @@ final class CremonaSsoController extends Controller
         abort_unless($this->enabled(), Response::HTTP_NOT_FOUND);
 
         $state = Str::random(96);
+        $clientId = (string) config('cremona-portal.client_id');
 
         $request->session()->put('cremona_sso_logout', [
             'state' => $state,
@@ -154,12 +155,13 @@ final class CremonaSsoController extends Controller
         return response()
             ->view('sso.logout', [
                 'endpoint' => config('cremona-portal.issuer').'/site-portal/logout',
-                'clientId' => config('cremona-portal.client_id'),
+                'clientId' => $clientId,
                 'state' => $state,
+                'signature' => hash_hmac('sha256', $clientId.'|'.$state, (string) config('cremona-portal.logout_secret')),
             ])
-            // Safari can omit Origin on a cross-site form POST. Keep the
-            // browser's strict-origin Referer available for Cremona to check.
-            ->header('Referrer-Policy', 'strict-origin-when-cross-origin');
+            // Le formulaire contient une preuve HMAC liée à l'état éphémère :
+            // aucun referer n'est nécessaire ni souhaitable.
+            ->header('Referrer-Policy', 'no-referrer');
     }
 
     public function completeLogout(Request $request): RedirectResponse

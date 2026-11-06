@@ -12,6 +12,7 @@ class CremonaSsoRedirectTest extends TestCase
         config()->set('cremona-portal.enabled', true);
         config()->set('cremona-portal.issuer', 'https://cremona.example.test');
         config()->set('cremona-portal.client_id', 'site-demo-client');
+        config()->set('cremona-portal.logout_secret', 'test-shared-secret');
         config()->set('cremona-portal.redirect_uri', 'https://site.example.test/admin/sso/callback');
 
         $response = $this->get(route('cremona-sso.redirect'));
@@ -36,15 +37,17 @@ class CremonaSsoRedirectTest extends TestCase
         config()->set('cremona-portal.enabled', true);
         config()->set('cremona-portal.issuer', 'https://cremona.example.test');
         config()->set('cremona-portal.client_id', 'site-demo-client');
+        config()->set('cremona-portal.logout_secret', 'test-shared-secret');
 
         $response = $this->actingAs(User::factory()->create())
             ->post(route('cremona-sso.logout'));
 
         $response->assertOk()
             ->assertSee('https://cremona.example.test/site-portal/logout', false)
-            ->assertSee('name="client_id" value="site-demo-client"', false);
+            ->assertSee('name="client_id" value="site-demo-client"', false)
+            ->assertSee('name="signature"', false);
         $response->assertSessionHas('cremona_sso_logout.state');
-        $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+        $response->assertHeader('Referrer-Policy', 'no-referrer');
     }
 
     public function test_the_site_only_closes_its_session_after_the_matching_central_logout_returns(): void

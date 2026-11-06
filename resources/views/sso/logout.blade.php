@@ -10,6 +10,7 @@
     <form id="single-logout" method="post" action="{{ $endpoint }}">
         <input type="hidden" name="client_id" value="{{ $clientId }}">
         <input type="hidden" name="state" value="{{ $state }}">
+        <input type="hidden" name="signature" value="{{ $signature }}">
         <p>Déconnexion en cours…</p>
         <button type="submit">Terminer la déconnexion</button>
     </form>
