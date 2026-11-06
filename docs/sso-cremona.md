@@ -19,6 +19,20 @@ Les raccourcis de gestion affichés dans le menu viennent de Cremona ; ils sont
 déjà filtrés par organisation, module actif et droits de l'utilisateur. Le
 site ne crée jamais de droit Cremona.
 
+## Déconnexion de l’espace
+
+La commande unique **Se déconnecter de l’espace** ferme les deux sessions :
+celle du site et celle de Cremona. Le site crée un état court, aléatoire et
+lié à sa session, puis le navigateur le transmet en POST à Cremona. Cremona
+vérifie que la requête provient bien du site déclaré pour ce client OAuth et
+que l’utilisateur central appartient toujours à l’organisation concernée. Il
+ferme alors sa session et revient vers l’URL de fin de session préconfigurée ;
+le site vérifie le même état et ferme sa propre session.
+
+Il n’existe ni URL de retour libre, ni mot de passe recopié, ni jeton OAuth
+conservé par le site. Un échec ferme au minimum aucune session par accident :
+l’utilisateur revient au site et recommence sa connexion si nécessaire.
+
 Pour terminer une première connexion, l'utilisateur doit être membre actif de
 l'organisation raccordée dans Cremona. Une même adresse e-mail déjà présente
 dans le site mais non reliée à un identifiant Cremona est refusée : le

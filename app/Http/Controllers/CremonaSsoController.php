@@ -7,6 +7,7 @@ use App\Support\CremonaPortal;
 use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -132,6 +133,53 @@ final class CremonaSsoController extends Controller
         abort_unless($url !== null, Response::HTTP_NOT_FOUND);
 
         return redirect()->away($url);
+    }
+
+    /**
+     * Starts a single, browser-mediated logout. The site session intentionally
+     * remains alive until Cremona has closed its own session and returned with
+     * the state created below.
+     */
+    public function logout(Request $request): HttpResponse
+    {
+        abort_unless($this->enabled(), Response::HTTP_NOT_FOUND);
+
+        $state = Str::random(96);
+
+        $request->session()->put('cremona_sso_logout', [
+            'state' => $state,
+            'expires_at' => now()->addMinutes(5)->getTimestamp(),
+        ]);
+
+        return response()
+            ->view('sso.logout', [
+                'endpoint' => config('cremona-portal.issuer').'/site-portal/logout',
+                'clientId' => config('cremona-portal.client_id'),
+                'state' => $state,
+            ])
+            ->header('Referrer-Policy', 'no-referrer');
+    }
+
+    public function completeLogout(Request $request): RedirectResponse
+    {
+        abort_unless($this->enabled(), Response::HTTP_NOT_FOUND);
+
+        $pending = $request->session()->pull('cremona_sso_logout');
+
+        abort_unless(
+            is_array($pending)
+            && is_string($pending['state'] ?? null)
+            && is_int($pending['expires_at'] ?? null)
+            && $pending['expires_at'] >= now()->getTimestamp()
+            && hash_equals($pending['state'], $request->string('state')->toString()),
+            Response::HTTP_UNAUTHORIZED,
+        );
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('filament.admin.auth.login');
     }
 
     private function enabled(): bool

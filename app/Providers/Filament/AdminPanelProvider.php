@@ -8,6 +8,7 @@ use App\Filament\Widgets\AdminWelcome;
 use App\Modules\SiteSettings\Models\SiteSetting;
 use App\Support\CremonaPortal;
 use App\Support\Modules;
+use Filament\Actions\Action;
 use Filament\Auth\Pages\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -40,6 +41,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login(config('cremona-portal.enabled') ? CremonaSsoLogin::class : Login::class)
+            ->userMenuItems(config('cremona-portal.enabled') ? [
+                'logout' => Action::make('logout')
+                    ->label('Se déconnecter de l’espace')
+                    ->icon('heroicon-o-arrow-left-end-on-rectangle')
+                    ->url(route('cremona-sso.logout'))
+                    ->postToUrl(),
+            ] : [])
             ->profile()
             ->brandName(fn (): string => Schema::hasTable('site_settings')
                 ? SiteSetting::query()->value('site_name') ?: config('maracuja.product_name', 'Maracuja CMS')
