@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Modules\Pages\Models\Page;
 use App\Modules\SiteSettings\Models\SiteSetting;
 use App\Support\Modules;
+use App\Services\CremonaIncomingRequestSender;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -45,7 +46,19 @@ class ContactController extends Controller
         $data['name'] = $settings->contact_form_show_name ? $data['name'] : $data['email'];
         $message = ContactRequestData::fromArray($data);
 
-        StoreInquiry::run($message);
+        if (app(CremonaIncomingRequestSender::class)->enabled()) {
+            try {
+                app(CremonaIncomingRequestSender::class)->send($message);
+            } catch (\Throwable $exception) {
+                report($exception);
+
+                return back()->withInput()->withErrors([
+                    'form' => 'Votre message ne peut pas être transmis pour le moment. Merci de réessayer dans quelques instants.',
+                ]);
+            }
+        } else {
+            StoreInquiry::run($message);
+        }
 
         if ($settings->contact_form_send_admin_email && $settings->contact_email) {
             Mail::to($settings->contact_email)->send(new ContactRequestReceived($message));

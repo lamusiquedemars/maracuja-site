@@ -114,7 +114,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
 
-        if (Modules::enabled('contact_form') && is_dir(base_path('vendor/maracuja-digital/site-core-contact/src/Filament/Resources'))) {
+        if (Modules::enabled('contact_form') && ! app(\App\Services\CremonaIncomingRequestSender::class)->enabled() && is_dir(base_path('vendor/maracuja-digital/site-core-contact/src/Filament/Resources'))) {
             $panel->discoverResources(
                 in: base_path('vendor/maracuja-digital/site-core-contact/src/Filament/Resources'),
                 for: 'Maracuja\SiteCore\Contact\Filament\Resources',
