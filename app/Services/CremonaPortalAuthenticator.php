@@ -36,6 +36,26 @@ final class CremonaPortalAuthenticator
         return ['user' => $user, 'identity' => $identity];
     }
 
+    public function sessionLink(User $user, string $item): ?string
+    {
+        $clientId = (string) config('cremona-portal.client_id');
+        $email = strtolower(trim($user->email));
+        $subject = (string) $user->getAuthIdentifier();
+        $timestamp = time();
+        $signature = hash_hmac('sha256', implode('|', [$clientId, $subject, $email, $item, $timestamp]), (string) config('cremona-portal.logout_secret'));
+
+        $response = Http::acceptJson()->timeout(10)->post(config('cremona-portal.issuer').'/api/v1/site-portal/session-link', [
+            'client_id' => $clientId,
+            'subject' => $subject,
+            'email' => $email,
+            'item' => $item,
+            'timestamp' => $timestamp,
+            'signature' => $signature,
+        ]);
+
+        return $response->successful() && is_string($response->json('entry_url')) ? $response->json('entry_url') : null;
+    }
+
     /** @param array<string, mixed> $identity */
     private function isValidIdentity(array $identity): bool
     {

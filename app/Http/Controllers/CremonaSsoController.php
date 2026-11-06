@@ -129,7 +129,10 @@ final class CremonaSsoController extends Controller
     {
         abort_unless(config('cremona-portal.enabled'), Response::HTTP_NOT_FOUND);
 
-        $url = CremonaPortal::url($item);
+        abort_unless(CremonaPortal::has($item), Response::HTTP_NOT_FOUND);
+        $user = Auth::user();
+        abort_unless($user instanceof User, Response::HTTP_UNAUTHORIZED);
+        $url = app(\App\Services\CremonaPortalAuthenticator::class)->sessionLink($user, $item);
         abort_unless($url !== null, Response::HTTP_NOT_FOUND);
 
         return redirect()->away($url);
