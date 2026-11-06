@@ -1,19 +1,22 @@
-# Pilote SSO Cremona
+# Connexion unifiée site + Cremona
 
-Ce site peut déléguer son administration à Cremona lorsque les variables
-suivantes sont explicitement activées :
+Lorsque le raccordement est activé, le site reste le point d'entrée et le
+référentiel d'identité de ses utilisateurs. Les variables suivantes relient le
+site à Cremona :
 
 ```env
 CREMONA_SSO_ENABLED=true
 CREMONA_SSO_ISSUER=https://cremona.maracujadigital.fr
-CREMONA_SSO_CLIENT_ID=identifiant-public-du-client-oauth
-CREMONA_SSO_REDIRECT_URI=https://site.maracujadigital.fr/admin/sso/callback
-CREMONA_SSO_DEFAULT_SITE_ROLE=admin
+CREMONA_SSO_CLIENT_ID=identifiant-technique-du-raccordement
+CREMONA_SSO_LOGOUT_SECRET=secret-partagé-entre-les-deux-serveurs
 ```
 
-Il s'agit d'un client OAuth public : l'identifiant n'est pas secret et aucun
-mot de passe Cremona ne transite par le site. Le navigateur utilise un code
-court et PKCE, puis le site établit sa propre session d'administration.
+L'utilisateur ouvre toujours `https://domaine-du-client/admin` et saisit son
+adresse e-mail et son mot de passe **du site**. Le site vérifie ce mot de passe
+dans sa propre base, puis demande à Cremona, par un échange serveur à serveur
+signé et très court, les raccourcis et droits métier de ce même utilisateur.
+Le mot de passe ne quitte jamais le site et n'est ni copié ni synchronisé dans
+Cremona.
 
 Les raccourcis de gestion affichés dans le menu viennent de Cremona ; ils sont
 déjà filtrés par organisation, module actif et droits de l'utilisateur. Le
@@ -29,13 +32,13 @@ que l’utilisateur central appartient toujours à l’organisation concernée. 
 ferme alors sa session et revient vers l’URL de fin de session préconfigurée ;
 le site vérifie le même état et ferme sa propre session.
 
-Il n’existe ni URL de retour libre, ni mot de passe recopié, ni jeton OAuth
-conservé par le site. Un échec ferme au minimum aucune session par accident :
+Il n’existe ni URL de retour libre, ni mot de passe recopié, ni jeton durable
+conservé par le site. Un échec ne ferme aucune session par accident :
 l’utilisateur revient au site et recommence sa connexion si nécessaire.
 
-La déconnexion fédérée ne dépend ni de `Origin` ni de `Referer`, variables selon
-les navigateurs. Le site signe la demande avec une preuve HMAC liée au client
-OAuth public et à son état éphémère. Le secret est propre au raccordement,
+La connexion comme la déconnexion fédérée ne dépend ni de `Origin` ni de
+`Referer`, variables selon les navigateurs. Le site signe ses demandes avec une
+preuve HMAC liée au raccordement et à un état éphémère. Le secret est propre au raccordement,
 conservé uniquement dans les fichiers d'environnement des deux serveurs et
 jamais transmis au navigateur. Le retour reste fixe et ne dépend jamais du
 navigateur.
@@ -52,10 +55,11 @@ navigateur.
 non navigables et non communicables aux utilisateurs. Les ouvrir directement
 doit être refusé : seul le bouton de l’interface lance le flux complet.
 
-Pour terminer une première connexion, l'utilisateur doit être membre actif de
-l'organisation raccordée dans Cremona. Une même adresse e-mail déjà présente
-dans le site mais non reliée à un identifiant Cremona est refusée : le
-rattachement d'un compte existant doit rester une opération explicite.
+Pour terminer une connexion, l'utilisateur doit avoir un compte local actif
+sur le site **et** être membre actif de l'organisation raccordée dans Cremona,
+avec la même adresse e-mail. Les comptes et leurs rôles restent créés par
+l'administrateur de chaque application : le raccordement ne crée jamais un
+accès métier par simple correspondance d'e-mail.
 
 Le pilote Demo Maracuja est publié. La recette commence par
 `https://site.maracujadigital.fr/admin`, avec un membre actif de
