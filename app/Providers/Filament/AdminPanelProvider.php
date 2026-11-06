@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
                 'logout' => Action::make('logout')
                     ->label('Se déconnecter de l’espace')
                     ->icon('heroicon-o-arrow-left-end-on-rectangle')
-                    ->url(route('cremona-sso.logout'))
+                    ->url(fn (): string => route('cremona-sso.logout'))
                     ->postToUrl(),
             ] : [])
             ->profile()
