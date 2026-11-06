@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -41,9 +42,20 @@ final class CremonaSsoController extends Controller
         abort_unless($this->enabled(), Response::HTTP_NOT_FOUND);
 
         $pending = $request->session()->pull('cremona_sso');
-        abort_unless(is_array($pending) && is_string($pending['state'] ?? null), Response::HTTP_UNAUTHORIZED);
-        abort_unless(hash_equals($pending['state'], (string) $request->query('state')), Response::HTTP_UNAUTHORIZED);
-        abort_unless($request->filled('code'), Response::HTTP_UNAUTHORIZED);
+        if (! is_array($pending) || ! is_string($pending['state'] ?? null)) {
+            Log::warning('SSO Cremona refusé au retour du site.', ['reason' => 'missing_pending_session']);
+            abort(Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (! hash_equals($pending['state'], (string) $request->query('state'))) {
+            Log::warning('SSO Cremona refusé au retour du site.', ['reason' => 'state_mismatch']);
+            abort(Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (! $request->filled('code')) {
+            Log::warning('SSO Cremona refusé au retour du site.', ['reason' => 'missing_authorization_code']);
+            abort(Response::HTTP_UNAUTHORIZED);
+        }
 
         $token = Http::asForm()->acceptJson()->timeout(10)->post(config('cremona-portal.issuer').'/oauth/token', [
             'grant_type' => 'authorization_code',
@@ -53,13 +65,22 @@ final class CremonaSsoController extends Controller
             'code_verifier' => $pending['verifier'],
         ]);
 
-        abort_unless($token->successful() && is_string($token->json('access_token')), Response::HTTP_UNAUTHORIZED);
+        if (! $token->successful() || ! is_string($token->json('access_token'))) {
+            Log::warning('SSO Cremona : échange du code refusé.', [
+                'status' => $token->status(),
+                'oauth_error' => $token->json('error'),
+            ]);
+            abort(Response::HTTP_UNAUTHORIZED);
+        }
 
         $profile = Http::withToken($token->json('access_token'))
             ->acceptJson()->timeout(10)
             ->get(config('cremona-portal.issuer').'/api/v1/site-portal/profile');
 
-        abort_unless($profile->successful(), Response::HTTP_FORBIDDEN);
+        if (! $profile->successful()) {
+            Log::warning('SSO Cremona : profil de portail refusé.', ['status' => $profile->status()]);
+            abort(Response::HTTP_FORBIDDEN);
+        }
 
         $identity = $profile->json();
         abort_unless(
