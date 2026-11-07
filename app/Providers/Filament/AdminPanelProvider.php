@@ -6,7 +6,6 @@ use App\Filament\Auth\CremonaSsoLogin;
 use App\Filament\Widgets\AdminOverview;
 use App\Filament\Widgets\AdminWelcome;
 use App\Modules\SiteSettings\Models\SiteSetting;
-use App\Support\CremonaPortal;
 use App\Support\Modules;
 use Filament\Actions\Action;
 use Filament\Auth\Pages\Login;
@@ -14,7 +13,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -30,6 +28,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Maracuja\SiteCore\Audience\Filament\Pages\AudienceHome;
 use Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome;
+use Maracuja\SiteCore\ProfessionalWorkspace\Filament\ProfessionalWorkspacePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -68,36 +67,11 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->plugin(new ProfessionalWorkspacePlugin)
             ->widgets([
                 AccountWidget::class,
                 AdminWelcome::class,
                 AdminOverview::class,
-            ])
-            ->navigationItems([
-                NavigationItem::make('Clients')
-                    ->group('Gestion de l’activité')
-                    ->icon('heroicon-o-users')
-                    ->sort(10)
-                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'clients']))
-                    ->visible(fn (): bool => CremonaPortal::has('clients')),
-                NavigationItem::make('Demandes')
-                    ->group('Gestion de l’activité')
-                    ->icon('heroicon-o-inbox-arrow-down')
-                    ->sort(20)
-                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'requests']))
-                    ->visible(fn (): bool => CremonaPortal::has('requests')),
-                NavigationItem::make('Rendez-vous')
-                    ->group('Gestion de l’activité')
-                    ->icon('heroicon-o-calendar-days')
-                    ->sort(30)
-                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'appointments']))
-                    ->visible(fn (): bool => CremonaPortal::has('appointments')),
-                NavigationItem::make('Devis')
-                    ->group('Gestion de l’activité')
-                    ->icon('heroicon-o-document-currency-euro')
-                    ->sort(40)
-                    ->url(fn (): string => route('cremona-sso.portal', ['item' => 'quotes']))
-                    ->visible(fn (): bool => CremonaPortal::has('quotes')),
             ])
             ->middleware([
                 EncryptCookies::class,

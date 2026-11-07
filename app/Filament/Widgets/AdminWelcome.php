@@ -11,7 +11,6 @@ use App\Filament\Resources\SiteNotices\SiteNoticeResource;
 use App\Filament\Resources\SiteSettings\SiteSettingResource;
 use App\Modules\SiteSettings\Models\SiteSetting;
 use App\Services\CremonaIncomingRequestSender;
-use App\Support\CremonaPortal;
 use App\Support\Modules;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Schema;
@@ -53,16 +52,9 @@ class AdminWelcome extends Widget
     private function requestManagementAction(): ?array
     {
         if (app(CremonaIncomingRequestSender::class)->enabled()) {
-            if (! CremonaPortal::has('requests')) {
-                return null;
-            }
-
-            return [
-                'label' => 'Traiter les demandes',
-                'description' => 'Messages entrants et suivi client.',
-                'url' => route('cremona-sso.portal', ['item' => 'requests']),
-                'external' => false,
-            ];
+            // The Core workspace card is the single entry point to Cremona.
+            // Do not reproduce individual CRM functions inside a site admin.
+            return null;
         }
 
         return $this->moduleAction('contact_form', InquiryResource::class, 'Traiter les demandes', 'Messages entrants et réponses.', 'inquiries');
