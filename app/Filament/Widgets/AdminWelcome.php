@@ -10,6 +10,8 @@ use App\Filament\Resources\Pages\PageResource;
 use App\Filament\Resources\SiteNotices\SiteNoticeResource;
 use App\Filament\Resources\SiteSettings\SiteSettingResource;
 use App\Modules\SiteSettings\Models\SiteSetting;
+use App\Services\CremonaIncomingRequestSender;
+use App\Support\CremonaPortal;
 use App\Support\Modules;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Schema;
@@ -43,9 +45,27 @@ class AdminWelcome extends Widget
         return array_values(array_filter([
             $this->moduleAction('pages', PageResource::class, 'Mettre à jour une page', 'Titres, textes principaux et SEO.'),
             $this->moduleAction('content_slots', ContentSlotResource::class, 'Modifier un texte court', 'Accroches, phrases de section et micro-contenus.'),
-            $this->moduleAction('contact_form', InquiryResource::class, 'Traiter les demandes', 'Messages entrants et réponses.', 'inquiries'),
+            $this->requestManagementAction(),
             $this->moduleAction('site_settings', SiteSettingResource::class, 'Régler les informations du site', 'Nom, contact, réseaux, SEO et visuels par défaut.'),
         ]));
+    }
+
+    private function requestManagementAction(): ?array
+    {
+        if (app(CremonaIncomingRequestSender::class)->enabled()) {
+            if (! CremonaPortal::has('requests')) {
+                return null;
+            }
+
+            return [
+                'label' => 'Traiter les demandes',
+                'description' => 'Messages entrants et suivi client.',
+                'url' => route('cremona-sso.portal', ['item' => 'requests']),
+                'external' => false,
+            ];
+        }
+
+        return $this->moduleAction('contact_form', InquiryResource::class, 'Traiter les demandes', 'Messages entrants et réponses.', 'inquiries');
     }
 
     private function secondaryActions(): array

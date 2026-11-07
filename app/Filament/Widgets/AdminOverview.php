@@ -6,6 +6,7 @@ use App\Modules\Articles\Models\Article;
 use App\Modules\ContentSlots\Models\ContentSlot;
 use App\Modules\News\Models\NewsPost;
 use App\Modules\Pages\Models\Page;
+use App\Services\CremonaIncomingRequestSender;
 use App\Support\Modules;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
@@ -36,7 +37,7 @@ class AdminOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        return [
+        $stats = [
             Stat::make('Pages publiées', Modules::enabled('pages') ? $this->count(Page::class, 'pages', fn ($query) => $query->where('is_published', true)) : 0)
                 ->description('Pages visibles sur le site')
                 ->icon(Heroicon::OutlinedRectangleStack)
@@ -45,11 +46,20 @@ class AdminOverview extends StatsOverviewWidget
                 ->description('Brouillons, contenus courts ou demandes en attente')
                 ->icon(Heroicon::OutlinedPencilSquare)
                 ->color('warning'),
-            Stat::make('Demandes à traiter', $this->inquiriesToHandleCount())
+        ];
+
+        // In connected mode the request queue belongs to Cremona. Showing the
+        // local counter here would falsely suggest that the site owns it.
+        if (! $this->usesConnectedRequests()) {
+            $count = $this->inquiriesToHandleCount();
+
+            $stats[] = Stat::make('Demandes à traiter', $count)
                 ->description('Nouvelles demandes et suivis prioritaires')
                 ->icon(Heroicon::OutlinedInbox)
-                ->color($this->inquiriesToHandleCount() > 0 ? 'danger' : 'gray'),
-        ];
+                ->color($count > 0 ? 'danger' : 'gray');
+        }
+
+        return $stats;
     }
 
     private function contentToReviewCount(): int
@@ -68,7 +78,7 @@ class AdminOverview extends StatsOverviewWidget
             $count += $this->count(ContentSlot::class, 'content_slots');
         }
 
-        if (Modules::enabled('contact_form')) {
+        if (Modules::enabled('contact_form') && ! $this->usesConnectedRequests()) {
             $count += $this->inquiriesToHandleCount();
         }
 
@@ -87,6 +97,11 @@ class AdminOverview extends StatsOverviewWidget
                 InquiryStatus::ToHandle->value,
             ])
             ->count();
+    }
+
+    private function usesConnectedRequests(): bool
+    {
+        return app(CremonaIncomingRequestSender::class)->enabled();
     }
 
     /**

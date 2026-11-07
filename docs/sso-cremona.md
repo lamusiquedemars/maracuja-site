@@ -20,7 +20,13 @@ Cremona.
 
 Les raccourcis de gestion affichés dans le menu viennent de Cremona ; ils sont
 déjà filtrés par organisation, module actif et droits de l'utilisateur. Le
-site ne crée jamais de droit Cremona.
+site ne crée jamais de droit Cremona. Il conserve uniquement ses rubriques
+éditoriales : pages, médias, actualités, galeries, SEO et réglages du site.
+
+Quand le formulaire public est raccordé, le site transmet la demande à
+Cremona et masque sa liste locale de demandes, ainsi que son compteur local.
+Le bouton « Traiter les demandes » ouvre alors la file Cremona. Cela évite deux
+files concurrentes pour les mêmes messages.
 
 ## Déconnexion de l’espace
 
