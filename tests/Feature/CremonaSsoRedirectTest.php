@@ -47,6 +47,15 @@ class CremonaSsoRedirectTest extends TestCase
             && $request['item'] === 'workspace');
     }
 
+    public function test_the_workspace_route_rejects_anonymous_visitors_without_a_login_redirect(): void
+    {
+        config()->set('cremona-portal.enabled', true);
+        $this->withSession([
+            'cremona_portal' => ['navigation' => [['key' => 'workspace']]],
+        ])->get(route('cremona-sso.portal', ['item' => 'workspace']))
+            ->assertUnauthorized();
+    }
+
     public function test_the_site_does_not_expose_the_sso_flow_before_it_is_configured(): void
     {
         config()->set('cremona-portal.enabled', false);
