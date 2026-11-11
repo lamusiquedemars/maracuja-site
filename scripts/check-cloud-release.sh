@@ -3,11 +3,12 @@
 # No deployment, migration, server release change, or .env access.
 set -Eeuo pipefail
 umask 077
-if [[ $# -ne 2 || ! "$1" =~ ^[1-9][0-9]*$ || ! "$2" =~ ^[0-9a-f]{40}$ ]]; then
-  echo 'Usage: bash check-cloud-release.sh BUILD_RUN_ID SHA_SITE_COMPLET' >&2; exit 64
+if [[ $# -lt 2 || $# -gt 3 || ! "$1" =~ ^[1-9][0-9]*$ || ! "$2" =~ ^[0-9a-f]{40}$ || ( $# -eq 3 && "$3" != '--stage' ) ]]; then
+  echo 'Usage: bash check-cloud-release.sh BUILD_RUN_ID SHA_SITE_COMPLET [--stage]' >&2; exit 64
 fi
 run_id="$1"
 expected_sha="$2"
+mode="${3:-check}"
 repo='lamusiquedemars/maracuja-control'
 root="$HOME/apps/maracuja-site"
 [[ -d "$root" && -L "$root/current" ]] || { echo 'Installation Maracuja Site absente.' >&2; exit 1; }
@@ -90,7 +91,80 @@ comm -13 "$work/old.txt" "$work/new.txt"
 echo '--- Migrations absentes du build (noms) ---'
 comm -23 "$work/old.txt" "$work/new.txt"
 printf 'Nombre de migrations : installation %s, build %s\n' "$(wc -l < "$work/old.txt")" "$(wc -l < "$work/new.txt")"
+echo '--- Migrations dont le contenu diffère ---'
+mismatches=0
+while IFS= read -r migration; do
+  if ! cmp -s "$active/$migration" <(tar -xOzf "$work/$archive" "./database/migrations/$migration"); then
+    echo "$migration"
+    mismatches=$((mismatches + 1))
+  fi
+done < "$work/new.txt"
+echo "Migrations différentes (contenu) : $mismatches"
+
 if [[ "$(readlink -f "$root/current/storage")" != "$(readlink -f "$root/shared/storage")" ]]; then
-  echo 'ATTENTION : le stockage actuel est propre à sa release ; publication à adapter.'
+  echo 'NOTE : ancienne release avec storage local. La nouvelle release utilisera shared/storage.'
 fi
-echo 'OK : archive GitHub téléchargée et vérifiée. Production inchangée.'
+
+if [[ "$mode" != '--stage' ]]; then
+  echo 'OK : archive GitHub téléchargée et vérifiée. Production inchangée.'
+  exit 0
+fi
+
+# Stage strictly off the served release; fail rather than migrate automatically.
+[[ "$mismatches" -eq 0 && "$(comm -13 "$work/old.txt" "$work/new.txt" | wc -l)" -eq 0
+   && "$(comm -23 "$work/old.txt" "$work/new.txt" | wc -l)" -eq 0 ]] || {
+  echo 'Migrations différentes. Préparation refusée en attente d’un plan spécifique.' >&2
+  exit 1
+}
+[[ -d "$root/failed" && -d "$root/releases" && -d "$root/shared/storage/app" ]] || {
+  echo 'Structure de releases ou stockage partagé indisponible.' >&2; exit 1;
+}
+[[ -f "$root/shared/.env" && "$(stat -c %a "$root/shared/.env")" = 600 ]] || {
+  echo '.env partagé absent ou permissions non conformes.' >&2; exit 1;
+}
+# This deploy candidate has no changes to the currently served files.
+name="$(date -u +%Y%m%d_%H%M%SZ)_${expected_sha:0:12}"
+stage="$root/failed/$name"
+[[ ! -e "$stage" && ! -L "$stage" && ! -e "$root/releases/$name" ]] || {
+  echo 'Nom de préparation déjà utilisé.' >&2; exit 1;
+}
+mkdir -m 700 -- "$stage"
+staged=0
+cleanup_stage_on_failure() {
+  if [[ "$staged" != 1 && -d "$stage" && ! -L "$stage" ]]; then
+    rm -rf -- "$stage"
+  fi
+}
+trap cleanup_stage_on_failure ERR
+tar --no-same-owner --no-same-permissions -xzf "$work/$archive" -C "$stage"
+[[ "$(tr -d '\r\n' < "$stage/REVISION")" = "$expected_sha"
+   && -f "$stage/CORE_REVISION" && -f "$stage/public/index.php"
+   && -f "$stage/vendor/autoload.php" ]] || {
+  echo 'Release extraite invalide.' >&2; exit 1;
+}
+[[ ! -e "$stage/.env" && ! -L "$stage/.env" ]] || {
+  echo '.env embarqué dans le build : refus.' >&2; exit 1;
+}
+if [[ -e "$stage/storage" || -L "$stage/storage" ]]; then
+  [[ -d "$stage/storage" && ! -L "$stage/storage" ]] || {
+    echo 'Stockage intégré inattendu.' >&2; exit 1;
+  }
+  mv "$stage/storage" "$stage/storage.template"
+fi
+ln -s ../../shared/.env "$stage/.env"
+ln -s ../../shared/storage "$stage/storage"
+[[ "$(readlink -f "$stage/storage")" = "$(readlink -f "$root/shared/storage")" ]] || {
+  echo 'Lien vers les médias partagés invalide.' >&2; exit 1;
+}
+php -r '
+ $m=json_decode(file_get_contents($argv[1]),true,flags:JSON_THROW_ON_ERROR);
+ file_put_contents($argv[2],$m["artifact"]["sha256"]."\n",LOCK_EX);
+' "$work/$manifest" "$stage/ARTIFACT_SHA256"
+chmod 600 "$stage/ARTIFACT_SHA256"
+cp -- "$work/$manifest" "$stage/BUILD_MANIFEST.json"
+chmod 600 "$stage/BUILD_MANIFEST.json"
+staged=1
+trap - ERR
+echo "PRÉPARATION OK : $stage"
+echo 'Aucune bascule de current, aucune migration, aucun changement sur la release active.'
+echo 'Ne pas promouvoir cette release avant la vérification des médias et des fonctions métier.'
