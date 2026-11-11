@@ -18,8 +18,8 @@ Route::get('/admin/sso/redirect', [CremonaSsoController::class, 'redirect'])->na
 Route::get('/admin/sso/callback', [CremonaSsoController::class, 'callback'])->name('cremona-sso.callback');
 Route::middleware('auth')->post('/admin/sso/logout', [CremonaSsoController::class, 'logout'])->name('cremona-sso.logout');
 Route::get('/admin/sso/logout/complete', [CremonaSsoController::class, 'completeLogout'])->name('cremona-sso.logout.complete');
-Route::middleware('auth')->get('/admin/gestion/{item}', [CremonaSsoController::class, 'portal'])
-    ->whereIn('item', ['clients', 'requests', 'appointments', 'quotes'])
+Route::get('/admin/gestion/{item}', [CremonaSsoController::class, 'portal'])
+    ->whereIn('item', ['workspace', 'clients', 'requests', 'appointments', 'quotes'])
     ->name('cremona-sso.portal');
 
 Route::get('/robots.txt', RobotsController::class)->name('robots');

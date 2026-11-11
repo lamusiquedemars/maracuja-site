@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class CremonaSsoRedirectTest extends TestCase
@@ -23,6 +24,36 @@ class CremonaSsoRedirectTest extends TestCase
         $this->assertStringContainsString('code_challenge_method=S256', $response->headers->get('Location'));
         $response->assertSessionHas('cremona_sso.state');
         $response->assertSessionHas('cremona_sso.verifier');
+    }
+
+    public function test_the_workspace_shortcut_redirects_to_the_central_session_ticket(): void
+    {
+        config()->set('cremona-portal.enabled', true);
+        config()->set('cremona-portal.issuer', 'https://cremona.example.test');
+        config()->set('cremona-portal.client_id', 'site-demo-client');
+        config()->set('cremona-portal.logout_secret', 'test-shared-secret');
+        Http::fake([
+            'https://cremona.example.test/api/v1/site-portal/session-link' => Http::response([
+                'entry_url' => 'https://cremona.example.test/site-portal/session?ticket=single-use',
+            ]),
+        ]);
+
+        $response = $this->actingAs(User::factory()->create())
+            ->withSession(['cremona_portal' => ['navigation' => [['key' => 'workspace']]]])
+            ->get(route('cremona-sso.portal', ['item' => 'workspace']));
+
+        $response->assertRedirect('https://cremona.example.test/site-portal/session?ticket=single-use');
+        Http::assertSent(fn ($request): bool => $request->url() === 'https://cremona.example.test/api/v1/site-portal/session-link'
+            && $request['item'] === 'workspace');
+    }
+
+    public function test_the_workspace_route_rejects_anonymous_visitors_without_a_login_redirect(): void
+    {
+        config()->set('cremona-portal.enabled', true);
+        $this->withSession([
+            'cremona_portal' => ['navigation' => [['key' => 'workspace']]],
+        ])->get(route('cremona-sso.portal', ['item' => 'workspace']))
+            ->assertUnauthorized();
     }
 
     public function test_the_site_does_not_expose_the_sso_flow_before_it_is_configured(): void
