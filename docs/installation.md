@@ -1,5 +1,12 @@
 # Installation
 
+> Ce guide couvre l'installation locale et la prévalidation de l'application.
+> Il ne constitue pas une procédure de publication sur un hébergement réel.
+> Pour toute livraison, suivre la politique commune de
+> [`maracuja-control`](../../maracuja-control/docs/deploiement-multi-sites.md)
+> et vérifier le statut documentaire dans
+> [`maracuja-control`](../../maracuja-control/docs/documents-a-retirer.md).
+
 Maracuja Site est une application Laravel + Filament. Chaque client a sa propre installation, sa base de donnees, ses medias et sa configuration. Le code partagé provient uniquement du checkout voisin `maracuja-site-core`.
 
 ## Nouvelle installation locale

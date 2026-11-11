@@ -1,5 +1,10 @@
 # Connexion unifiée site + Cremona
 
+> Ce document décrit le contrat fonctionnel du SSO, pas une procédure de
+> déploiement. Pour toute livraison, appliquer la politique commune de
+> [`maracuja-control`](../../maracuja-control/docs/deploiement-multi-sites.md) ;
+> ne pas rejouer les étapes d'activation sans audit et validation actuels.
+
 Lorsque le raccordement est activé, le site reste le point d'entrée et le
 référentiel d'identité de ses utilisateurs. Les variables suivantes relient le
 site à Cremona :

@@ -2,6 +2,15 @@
 
 Date: 2026-06-01
 
+> Ce récapitulatif conserve les décisions et questions de son contexte initial.
+> Pour la priorité actuelle Audience/Brevo et le reste à valider, se référer à
+> `../maracuja-site-core/docs/module-roadmap.md` dans l'espace de travail :
+> la communication marketing est désormais un objectif commercial P2, et la
+> campagne complète doit être migrée et recettée avant d'être promise. Les
+> mentions ci-dessous proposant de reporter Brevo sont historiques ; elles ne
+> constituent plus la priorité produit. Les e-mails transactionnels restent
+> distincts des campagnes marketing.
+
 Ce document sert de point d’entrée rapide pour reprendre le travail sur Maracuja CMS Starter et ses premiers usages réels, notamment Atelier Ivo Incidit.
 
 ## État général
