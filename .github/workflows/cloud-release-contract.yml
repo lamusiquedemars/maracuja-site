@@ -1,0 +1,40 @@
+name: Contrat de préparation LWS
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/check-cloud-release.sh'
+      - 'docs/cloud-release-from-lws.md'
+      - '.github/workflows/cloud-release-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  shell-contract:
+    name: Vérifier la syntaxe et les paramètres obligatoires
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Syntaxe Bash
+        run: bash -n scripts/check-cloud-release.sh
+      - name: Refuser une exécution sans références GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          if bash scripts/check-cloud-release.sh >/dev/null 2>&1; then
+            echo "::error::La commande aurait dû refuser les arguments manquants."
+            exit 1
+          fi
+          if bash scripts/check-cloud-release.sh not-a-run not-a-sha >/dev/null 2>&1; then
+            echo "::error::La commande aurait dû refuser des références invalides."
+            exit 1
+          fi
+          if bash scripts/check-cloud-release.sh 123 $(printf 'a%.0s' {1..40}) --deploy >/dev/null 2>&1; then
+            echo "::error::L'option --deploy est interdite."
+            exit 1
+          fi
+          echo "OK : stage explicite uniquement, sans lancement de production."
