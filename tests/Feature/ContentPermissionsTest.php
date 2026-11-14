@@ -10,6 +10,10 @@ use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
+use Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome;
+use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueCategories\CatalogueCategoryResource;
+use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueCollections\CatalogueCollectionResource;
+use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueItems\CatalogueItemResource;
 use Maracuja\SiteCore\Contact\Models\Inquiry;
 use Tests\TestCase;
 
@@ -70,6 +74,42 @@ class ContentPermissionsTest extends TestCase
         $this->assertTrue(Gate::forUser($user)->allows('create', SiteNotice::class));
         $this->assertFalse(Gate::forUser($user)->allows('viewAny', NewsPost::class));
         $this->actingAs($user)->get('/admin/users')->assertForbidden();
+    }
+
+    public function test_catalogue_administration_requires_an_enabled_module_and_editorial_access(): void
+    {
+        $manager = User::factory()->create([
+            'role' => User::ROLE_MANAGER,
+            'is_admin' => false,
+            'content_permissions' => ['catalogue'],
+        ]);
+        $reader = User::factory()->create([
+            'role' => User::ROLE_VIEWER,
+            'is_admin' => false,
+            'content_permissions' => ['catalogue'],
+        ]);
+        $homeUrl = CatalogueHome::getUrl(panel: 'admin');
+        $resourceUrls = [
+            CatalogueItemResource::getUrl(panel: 'admin'),
+            CatalogueCategoryResource::getUrl(panel: 'admin'),
+            CatalogueCollectionResource::getUrl(panel: 'admin'),
+        ];
+
+        $this->actingAs($manager);
+        foreach ([$homeUrl, ...$resourceUrls] as $url) {
+            $this->get($url)->assertOk();
+        }
+
+        $this->actingAs($reader);
+        foreach ([$homeUrl, ...$resourceUrls] as $url) {
+            $this->get($url)->assertForbidden();
+        }
+
+        config()->set('maracuja.modules.catalogue', false);
+        $this->actingAs($manager);
+        foreach ([$homeUrl, ...$resourceUrls] as $url) {
+            $this->get($url)->assertForbidden();
+        }
     }
 
     public function test_administrator_can_choose_functions_for_an_existing_account(): void
