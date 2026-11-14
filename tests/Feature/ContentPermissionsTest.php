@@ -14,6 +14,7 @@ use Maracuja\SiteCore\Catalogue\Filament\Pages\CatalogueHome;
 use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueCategories\CatalogueCategoryResource;
 use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueCollections\CatalogueCollectionResource;
 use Maracuja\SiteCore\Catalogue\Filament\Resources\CatalogueItems\CatalogueItemResource;
+use Maracuja\SiteCore\Catalogue\Models\CatalogueCollection;
 use Maracuja\SiteCore\Contact\Models\Inquiry;
 use Tests\TestCase;
 
@@ -109,6 +110,68 @@ class ContentPermissionsTest extends TestCase
         $this->actingAs($manager);
         foreach ([$homeUrl, ...$resourceUrls] as $url) {
             $this->get($url)->assertForbidden();
+        }
+    }
+
+    public function test_catalogue_home_previews_each_section_and_links_back_from_management(): void
+    {
+        $manager = User::factory()->create([
+            'role' => User::ROLE_MANAGER,
+            'is_admin' => false,
+            'content_permissions' => ['catalogue'],
+        ]);
+        $this->actingAs($manager);
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        Livewire::test(CatalogueHome::class)
+            ->assertSet('activeTab', 'items')
+            ->assertSee('Aucune fiche dans le catalogue.')
+            ->call('selectTab', 'categories')
+            ->assertSee('Aucune catégorie dans le catalogue.')
+            ->call('selectTab', 'catalogues')
+            ->assertSee('Créez un catalogue dans les réglages');
+
+        CatalogueCollection::query()->create(['name' => 'Archets de l’atelier']);
+        $instruments = CatalogueCollection::query()->create([
+            'name' => 'Instruments de l’atelier',
+            'plural_label' => 'Nos instruments',
+            'source' => 'cremona',
+            'is_published' => true,
+        ]);
+        $category = $instruments->categories()->create(['name' => 'Violons']);
+        $published = $instruments->items()->create(['title' => 'Violon Horizon', 'publication_status' => 'published']);
+        $draft = $instruments->items()->create(['title' => 'Violon de travail', 'publication_status' => 'draft']);
+        $category->items()->attach([$published->getKey(), $draft->getKey()]);
+
+        $itemsUrl = CatalogueItemResource::getUrl(panel: 'admin');
+        $categoriesUrl = CatalogueCategoryResource::getUrl(panel: 'admin');
+        $settingsUrl = CatalogueCollectionResource::getUrl(panel: 'admin');
+
+        Livewire::test(CatalogueHome::class)
+            ->assertSet('activeTab', 'items')
+            ->assertSee('Violon Horizon')
+            ->assertSee('Violon de travail')
+            ->assertSee('Publié')
+            ->assertSee('Brouillon')
+            ->assertSee('Gérer les fiches')
+            ->assertSee($itemsUrl)
+            ->call('selectTab', 'categories')
+            ->assertSee('Violons')
+            ->assertSee('2 fiches')
+            ->assertSee('Gérer les catégories')
+            ->assertSee($categoriesUrl)
+            ->assertDontSee('Violon Horizon')
+            ->call('selectTab', 'catalogues')
+            ->assertSee('Nos instruments')
+            ->assertSee('Cremona')
+            ->assertSee('Ouvrir les réglages')
+            ->assertSee($settingsUrl);
+
+        $homeUrl = CatalogueHome::getUrl(panel: 'admin');
+        foreach ([$itemsUrl => 'Fiches', $categoriesUrl => 'Catégories', $settingsUrl => 'Réglages du catalogue'] as $url => $label) {
+            $this->get($url)
+                ->assertOk()
+                ->assertSeeInOrder(['fi-breadcrumbs', 'href="'.$homeUrl.'"', $label], false);
         }
     }
 
