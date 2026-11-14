@@ -2,28 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Modules\SiteSettings\Models\SiteSetting;
+use App\Support\Modules;
+use App\Support\PublicCatalogue;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Maracuja\SiteCore\Catalogue\Models\CatalogueCollection;
-use Maracuja\SiteCore\Catalogue\Models\CatalogueItem;
 
 class CatalogueController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $collection = CatalogueCollection::query()->where('is_published', true)->orderBy('id')->firstOrFail();
-        $category = $request->string('categorie')->toString();
-        $items = $collection->items()->public()->with('categories')
-            ->when($category !== '', fn ($query) => $query->whereHas('categories', fn ($categories) => $categories->where('slug', $category)))
-            ->orderBy('sort_order')->orderByDesc('published_at')->get();
+        abort_unless(Modules::enabled('catalogue'), 404);
 
-        return view('site.catalogue.index', compact('collection', 'items', 'category'));
+        $collection = PublicCatalogue::published();
+        $category = $request->string('categorie')->toString();
+        $items = $collection?->items()->public()
+            ->when($category !== '', fn ($query) => $query->whereHas('categories', fn ($categories) => $categories->where('slug', $category)))
+            ->orderBy('sort_order')->orderByDesc('published_at')->get() ?? collect();
+
+        return view('site.catalogue.index', [
+            'settings' => SiteSetting::current(),
+            'catalogueLabel' => PublicCatalogue::label($collection),
+            'collection' => $collection,
+            'items' => $items,
+            'category' => $category,
+        ]);
     }
 
-    public function show(string $slug)
+    public function show(string $slug): View
     {
-        $collection = CatalogueCollection::query()->where('is_published', true)->orderBy('id')->firstOrFail();
-        $item = $collection->items()->public()->with('categories')->where('slug', $slug)->firstOrFail();
+        abort_unless(Modules::enabled('catalogue'), 404);
 
-        return view('site.catalogue.show', compact('collection', 'item'));
+        $collection = PublicCatalogue::published();
+        abort_if($collection === null, 404);
+
+        $item = $collection->items()->public()->where('slug', $slug)->firstOrFail();
+
+        return view('site.catalogue.show', [
+            'settings' => SiteSetting::current(),
+            'catalogueLabel' => PublicCatalogue::label($collection),
+            'item' => $item,
+            'media' => $item->primaryMedia(),
+        ]);
     }
 }
