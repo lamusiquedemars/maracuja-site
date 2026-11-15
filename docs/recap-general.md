@@ -11,7 +11,7 @@ Date: 2026-06-01
 > constituent plus la priorité produit. Les e-mails transactionnels restent
 > distincts des campagnes marketing.
 
-Ce document sert de point d’entrée rapide pour reprendre le travail sur Maracuja CMS Starter et ses premiers usages réels, notamment Atelier Ivo Incidit.
+Ce document sert de point d’entrée rapide pour reprendre le travail sur Maracuja Site et ses premiers usages réels, notamment Atelier Ivo Incidit.
 
 ## État général
 

@@ -1,6 +1,6 @@
 # Content Admin
 
-Maracuja CMS sépare les pages codées des contenus vivants. Le client ne modifie pas la structure des pages, les CTA stratégiques ou les gabarits. Il gère seulement les contenus qui correspondent à une responsabilité claire.
+Maracuja Site sépare les pages codées des contenus vivants. Le client ne modifie pas la structure des pages, les CTA stratégiques ou les gabarits. Il gère seulement les contenus qui correspondent à une responsabilité claire.
 
 ## Règle de contenu
 

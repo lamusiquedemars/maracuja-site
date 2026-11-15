@@ -13,7 +13,7 @@ class MaracujaDoctorCommand extends Command
 {
     protected $signature = 'maracuja:doctor {--production : Lance des contrôles plus stricts avant livraison}';
 
-    protected $description = 'Vérifie que l’installation Maracuja CMS est prête pour la livraison.';
+    protected $description = 'Vérifie que l’installation Maracuja Site est prête pour la livraison.';
 
     /** @var array<int, array{status: string, check: string, detail: string}> */
     private array $results = [];
@@ -22,7 +22,7 @@ class MaracujaDoctorCommand extends Command
     {
         $production = (bool) $this->option('production');
 
-        $this->info('Diagnostic Maracuja CMS');
+        $this->info('Diagnostic Maracuja Site');
         $this->newLine();
 
         $this->checkAppConfiguration($production);

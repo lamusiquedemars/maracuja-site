@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_name')->default('Maracuja CMS');
+            $table->string('site_name')->default('Maracuja Site');
             $table->string('baseline')->nullable();
             $table->string('default_seo_title')->nullable();
             $table->text('default_seo_description')->nullable();

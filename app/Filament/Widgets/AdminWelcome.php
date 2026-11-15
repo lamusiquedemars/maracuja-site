@@ -32,7 +32,7 @@ class AdminWelcome extends Widget
         $settings = SiteSetting::current();
 
         return [
-            'siteName' => $settings->site_name ?: 'Maracuja CMS',
+            'siteName' => $settings->site_name ?: 'Maracuja Site',
             'baseline' => $settings->baseline,
             'primaryActions' => $this->primaryActions(),
             'secondaryActions' => $this->secondaryActions(),

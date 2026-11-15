@@ -15,6 +15,7 @@ class PublicCatalogueTest extends TestCase
         parent::setUp();
 
         $this->withoutVite();
+        config(['maracuja.modules.catalogue' => true]);
     }
 
     public function test_the_catalogue_is_in_the_menu_before_any_collection_is_published(): void

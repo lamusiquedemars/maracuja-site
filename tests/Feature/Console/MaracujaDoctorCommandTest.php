@@ -21,7 +21,7 @@ class MaracujaDoctorCommandTest extends TestCase
         ]);
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@example.test',
         ]);
 
@@ -40,7 +40,7 @@ class MaracujaDoctorCommandTest extends TestCase
         ]);
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@example.test',
         ]);
 
@@ -61,7 +61,7 @@ class MaracujaDoctorCommandTest extends TestCase
         ]);
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@example.test',
         ]);
 

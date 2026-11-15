@@ -55,7 +55,7 @@ class SiteSettingResource extends Resource
                 TextInput::make('site_name')
                     ->label('Nom du site')
                     ->required()
-                    ->default('Maracuja CMS'),
+                    ->default('Maracuja Site'),
                 TextInput::make('baseline')
                     ->label('Baseline'),
                 TextInput::make('default_seo_title')
