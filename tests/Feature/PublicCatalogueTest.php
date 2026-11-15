@@ -86,7 +86,7 @@ class PublicCatalogueTest extends TestCase
             'title' => 'Un violon dans l’âme',
             'slug' => 'un-violon-dans-lame',
             'excerpt' => 'Site vitrine d’un atelier de lutherie.',
-            'description' => 'Présentation du site de David.',
+            'description' => '<p>Présentation du <strong>site</strong> de David.</p>',
             'media' => [['url' => '/images/atelier.jpg', 'alt' => 'L’atelier de David']],
             'publication_status' => 'published',
         ]);
@@ -124,7 +124,8 @@ class PublicCatalogueTest extends TestCase
 
         $this->get($detailUrl)
             ->assertOk()
-            ->assertSee($project->description)
+            ->assertSee('<div class="prose"><p>Présentation du <strong>site</strong> de David.</p></div>', false)
+            ->assertDontSee('&lt;strong&gt;site&lt;/strong&gt;', false)
             ->assertSee('src="/images/atelier.jpg"', false)
             ->assertDontSee('Prix sur demande');
 

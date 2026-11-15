@@ -20,7 +20,7 @@
                 </figure>
             @endif
             @if ($item->description)
-                <p class="prose">{!! nl2br(e($item->description)) !!}</p>
+                <div class="prose">{!! $item->description !!}</div>
             @elseif ($item->excerpt)
                 <p class="prose">{{ $item->excerpt }}</p>
             @endif
