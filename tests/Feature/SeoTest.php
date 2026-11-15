@@ -22,7 +22,7 @@ class SeoTest extends TestCase
     public function test_public_page_outputs_core_seo_tags(): void
     {
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'default_seo_title' => 'Maracuja default',
             'default_seo_description' => 'Description par défaut du starter.',
             'default_og_image_path' => '/storage/social/default-og.jpg',

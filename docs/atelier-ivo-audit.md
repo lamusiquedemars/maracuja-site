@@ -152,7 +152,7 @@ Inventaire rapide:
 - galerie d’atelier dans `app/data/showcase.php`;
 - images de contenu dans `public/assets/images`.
 
-Mapping Maracuja CMS:
+Mapping Maracuja Site:
 
 - images de galerie globale -> module Gallery;
 - images par archet -> relation media propre dans le module Archets;
@@ -177,7 +177,7 @@ Le starter doit reprendre l’intention visuelle via `resources/css/thèmes/atel
 
 Mapping attendu:
 
-- layout/header/footer -> layout Maracuja CMS;
+- layout/header/footer -> layout Maracuja Site;
 - hero -> composant `x-site.hero`;
 - cards/gammes -> `FeatureGrid` ou composant Blade dédié;
 - galerie atelier -> preset gallery `carousel`;
@@ -193,14 +193,14 @@ JS actuel:
 - Fancyapps Carousel pour showcase;
 - Fancybox pour lightbox.
 
-Mapping Maracuja CMS:
+Mapping Maracuja Site:
 
 - navigation -> déjà couvert;
 - carousel -> déjà couvert via Embla;
 - lightbox -> déjà couvert via PhotoSwipe;
 - reveal/back-to-top -> déjà couverts.
 
-## Mapping Maracuja CMS
+## Mapping Maracuja Site
 
 Modules existants réutilisables:
 
@@ -268,7 +268,7 @@ Admin Filament:
 ## Plan de migration recommandé
 
 1. Profil `univers` confirmé dans le starter.
-2. Créer le module `Archets` dans Maracuja CMS.
+2. Créer le module `Archets` dans Maracuja Site.
 3. Reproduire les tables utiles en migrations Laravel.
 4. Importer les référentiels depuis l’export SQL.
 5. Importer les archets et leurs photos.

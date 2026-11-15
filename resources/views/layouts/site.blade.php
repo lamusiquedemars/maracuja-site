@@ -75,6 +75,9 @@
             @if (\App\Support\Modules::enabled('events'))
                 <a href="{{ route('events.index') }}">{{ \App\Support\ContentSlots::value('events.public_label', 'Événements') }}</a>
             @endif
+            @if (\App\Support\Modules::enabled('catalogue') && \Illuminate\Support\Facades\Route::has('catalogue.index'))
+                <a href="{{ route('catalogue.index') }}">{{ $catalogueLabel ?? \App\Support\PublicCatalogue::label(\App\Support\PublicCatalogue::published()) }}</a>
+            @endif
             @if (\App\Support\Modules::enabled('pages'))
                 <a href="{{ route('pages.show', 'services') }}">Services</a>
             @endif

@@ -1,18 +1,40 @@
-@extends('layouts.site')
+@extends('layouts.site', [
+    'seoTitle' => $item->seo_title ?: $item->title,
+    'seoDescription' => $item->seo_description ?: $item->excerpt,
+    'seoImage' => $media['url'] ?? null,
+])
 
 @section('content')
-    @php($media = $item->primaryMedia())
-    <article class="site-section catalogue-detail">
-        <a class="back-link" href="{{ route('catalogue.index') }}">← {{ $collection->plural_label }}</a>
-        @if($item->subtitle)<p class="eyebrow">{{ $item->subtitle }}</p>@endif
-        <h1>{{ $item->title }}</h1>
-        @if($media)<img class="catalogue-detail__image" src="{{ $media['url'] }}" alt="{{ $media['alt'] ?? $item->title }}">@endif
-        @if($item->description)<div class="catalogue-detail__description">{!! nl2br(e($item->description)) !!}</div>@endif
-        <p class="catalogue-detail__price">{{ $item->price_label ?: ($item->price_amount ? number_format((float) $item->price_amount, 2, ',', ' ').' €' : 'Prix sur demande') }}@if($item->availability) · {{ $item->availability }}@endif</p>
-        @if(filled($item->attributes))
-            <dl class="catalogue-detail__attributes">
-                @foreach($item->attributes as $label => $value)<dt>{{ $label }}</dt><dd>{{ $value }}</dd>@endforeach
-            </dl>
-        @endif
-    </article>
+    <x-site.hero :eyebrow="$catalogueLabel" :title="$item->title" :subtitle="$item->subtitle" variant="page" />
+
+    <x-site.breadcrumb :items="[
+        ['label' => $catalogueLabel, 'url' => route('catalogue.index')],
+        ['label' => $item->title],
+    ]" />
+
+    <x-site.section container="readable">
+        <article class="stack stack--lg">
+            @if ($media)
+                <figure class="media-figure">
+                    <img src="{{ $media['url'] }}" alt="{{ $media['alt'] ?? $item->title }}">
+                </figure>
+            @endif
+            @if ($item->description)
+                <p class="prose">{!! nl2br(e($item->description)) !!}</p>
+            @elseif ($item->excerpt)
+                <p class="prose">{{ $item->excerpt }}</p>
+            @endif
+            @include('site.catalogue.item-meta', ['item' => $item])
+            @if (filled($item->attributes))
+                <dl class="stack stack--sm">
+                    @foreach ($item->attributes as $label => $value)
+                        <div>
+                            <dt><strong>{{ $label }}</strong></dt>
+                            <dd>{{ $value }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
+            @endif
+        </article>
+    </x-site.section>
 @endsection

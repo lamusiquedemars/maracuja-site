@@ -200,7 +200,7 @@ class MaracujaDigitalDemoSeeder extends Seeder
     {
         // The starter account shipped with the old CMS demo must not survive a reference-site reset.
         User::query()->where('email', 'admin@maracuja.test')->delete();
-        NewsPost::query()->whereIn('slug', ['maracuja-cms-v1', 'front-system', 'admin-simplifiee'])->delete();
+        NewsPost::query()->whereIn('slug', ['maracuja-site-v1', 'front-system', 'admin-simplifiee'])->delete();
         Page::query()->where('slug', 'methode')->delete();
         SiteNotice::query()->where('title', 'Annonce démo')->delete();
 

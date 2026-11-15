@@ -296,7 +296,7 @@ class PublicSiteTest extends TestCase
             'slug' => 'mentions-legales',
             'type' => Page::TYPE_TEXT,
             'hero_title' => 'Mentions légales',
-            'content' => '<p>Éditeur du site: Maracuja CMS.</p>',
+            'content' => '<p>Éditeur du site: Maracuja Site.</p>',
             'is_published' => true,
             'published_at' => now(),
         ]);
@@ -305,7 +305,7 @@ class PublicSiteTest extends TestCase
             ->assertOk()
             ->assertSee('Fil d Ariane')
             ->assertSee('Mentions légales')
-            ->assertSee('Éditeur du site: Maracuja CMS')
+            ->assertSee('Éditeur du site: Maracuja Site')
             ->assertSee('Retour à l&#039;accueil', false);
     }
 
@@ -338,7 +338,7 @@ class PublicSiteTest extends TestCase
         Mail::fake();
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@maracuja.test',
         ]);
 
@@ -361,7 +361,7 @@ class PublicSiteTest extends TestCase
         Mail::fake();
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@maracuja.test',
         ]);
 
@@ -380,7 +380,7 @@ class PublicSiteTest extends TestCase
     public function test_contact_form_rejects_invalid_email_without_top_level_domain(): void
     {
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@maracuja.test',
         ]);
 
@@ -399,7 +399,7 @@ class PublicSiteTest extends TestCase
         Mail::fake();
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => null,
         ]);
 
@@ -422,7 +422,7 @@ class PublicSiteTest extends TestCase
         Mail::fake();
 
         SiteSetting::query()->create([
-            'site_name' => 'Maracuja CMS',
+            'site_name' => 'Maracuja Site',
             'contact_email' => 'contact@maracuja.test',
             'contact_form_send_confirmation_email' => true,
         ]);

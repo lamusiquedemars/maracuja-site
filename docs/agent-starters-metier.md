@@ -1,6 +1,6 @@
 # Agent Starters Métier
 
-Ce document sert de contexte pour un agent GPT chargé de proposer des starters Maracuja CMS adaptés à différents métiers: avocats, artisans, médecins, lieux culturels, consultants, écoles, ateliers, associations, etc.
+Ce document sert de contexte pour un agent GPT chargé de proposer des starters Maracuja Site adaptés à différents métiers: avocats, artisans, médecins, lieux culturels, consultants, écoles, ateliers, associations, etc.
 
 L'agent ne doit pas inventer un CMS générique. Il doit composer un starter réaliste à partir de l'architecture Maracuja existante, choisir les modules utiles, signaler les modules à implémenter, et garder une frontière claire entre site vitrine, contenus éditoriaux et module métier.
 
@@ -21,7 +21,7 @@ L'agent doit raisonner par besoin réel, pas par accumulation de fonctionnalité
 
 ## Architecture Produit
 
-Maracuja CMS Starter est un starter Laravel + Filament destiné aux sites vitrines administrables.
+Maracuja Site est un socle Laravel + Filament destiné aux sites vitrines administrables.
 
 Principes structurants:
 
@@ -777,7 +777,7 @@ Ne pas promettre:
 - synchronisation avec des outils externes sans cadrage technique;
 - module générique configurable pour tous les métiers.
 
-Si le besoin dépasse Maracuja CMS Starter, l'agent doit le dire et proposer:
+Si le besoin dépasse Maracuja Site, l'agent doit le dire et proposer:
 
 - soit un module métier cadré;
 - soit une intégration externe;

@@ -40,7 +40,7 @@ APP_NAME="Nom du site"
 APP_URL=https://example.com
 APP_LOCALE=fr
 
-MARACUJA_PRODUCT_NAME="Maracuja CMS"
+MARACUJA_PRODUCT_NAME="Maracuja Site"
 MARACUJA_THEME=default
 MARACUJA_OFFER=signature
 MARACUJA_INDEXABLE=false

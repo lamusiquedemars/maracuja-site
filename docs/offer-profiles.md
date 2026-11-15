@@ -1,6 +1,6 @@
 # Offer Profiles
 
-Maracuja CMS peut être configuré par profil commercial. Le profil décrit le niveau de complexité vendu. Il ne remplace pas le cadrage fonctionnel et ne doit pas devenir une liste rigide de modules.
+Maracuja Site peut être configuré par profil commercial. Le profil décrit le niveau de complexité vendu. Il ne remplace pas le cadrage fonctionnel et ne doit pas devenir une liste rigide de modules.
 
 ## Profils
 

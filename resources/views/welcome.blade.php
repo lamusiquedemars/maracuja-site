@@ -2,7 +2,7 @@
 
 @section('content')
     <x-site.hero
-        title="Maracuja CMS"
+        title="Maracuja Site"
         subtitle="Starter Laravel et Filament pour sites vitrines administrables."
     />
 
