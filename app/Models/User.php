@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Maracuja\SiteCore\Foundation\Casts\ContentPermissions;
 
 #[Fillable(['cremona_subject', 'name', 'email', 'password', 'role', 'is_admin', 'content_permissions', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
@@ -39,7 +40,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_active' => 'boolean',
-            'content_permissions' => 'array',
+            'content_permissions' => ContentPermissions::class,
         ];
     }
 
